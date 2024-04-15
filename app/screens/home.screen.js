@@ -15,7 +15,7 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            {!socket && (
+            {!socket ? (
                 <>
                     <Text style={styles.paragraph}>
                         Connecting to websocket server...
@@ -23,8 +23,8 @@ export default function HomeScreen() {
                     <Text style={styles.footnote}>
                         Make sure the backend is started and reachable
                     </Text> </>
-            )}
-            {socket && (
+            ):
+            socket && (
                 <>
                     <Text style={[styles.paragraph, { fontWeight: "bold" }]}>
                         Server time
