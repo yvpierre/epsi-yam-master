@@ -1,27 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import io from "socket.io-client";
-
-// Replace this URL with your own socket-io host, or start the backend locally
-const socketEndpoint = "http://localhost:3000";
-
+import { SocketContext } from '../contexts/socket.context';
 export default function HomeScreen() {
-    const [hasConnection, setConnection] = useState(false);
+    const socket = useContext(SocketContext);
     const [time, setTime] = useState(null);
 
-    useEffect(function didMount() {
-        const socket = io(socketEndpoint, {
-            transports: ["websocket"],
-        });
-
-        socket.io.on("open", () => setConnection(true));
-        socket.io.on("close", () => setConnection(false));
-
-        socket.on("time-msg", (data) => {
-            setTime(new Date(data.time).toString());
-        });
-
-        return function didUnmount() {
+    useEffect(() => {
+        socket.on("time-msg", (data) => { setTime(new Date(data.time).toString());});
+        return () => {
             socket.disconnect();
             socket.removeAllListeners();
         };
@@ -29,28 +15,24 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            {!hasConnection && (
+            {!socket && (
                 <>
                     <Text style={styles.paragraph}>
-                        Connecting to {socketEndpoint}...
+                        Connecting to websocket server...
                     </Text>
                     <Text style={styles.footnote}>
                         Make sure the backend is started and reachable
-                    </Text>
-                </>
+                    </Text> </>
             )}
-
-            {hasConnection && (
+            {socket && (
                 <>
                     <Text style={[styles.paragraph, { fontWeight: "bold" }]}>
                         Server time
                     </Text>
                     <Text style={styles.paragraph}>{time}</Text>
                 </>
-            )}
-        </View>
-    );
-}
+            )} </View>
+    ); }
 
 const styles = StyleSheet.create({
     container: {
