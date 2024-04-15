@@ -11,8 +11,8 @@ const GAME_INIT = { gameState: {
 const GameService = {
     init: {
         // Init first level of structure of 'gameState' object
-        gameState: () => { return GAME_INIT;
-        }, },
+        gameState: () => { return GAME_INIT;},
+    },
     send: {
         forPlayer: {
             // Return conditionnaly gameState custom objet for player views
@@ -31,8 +31,8 @@ const GameService = {
             viewQueueState: () => { return {
                 inQueue: true,
                 inGame: false,
-            };
-            } }
+            };}
+        }
     }, utils: {
         // Return game index in global games array by id
         findGameIndexById: (games, idGame) => {

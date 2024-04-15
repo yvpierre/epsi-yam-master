@@ -22,8 +22,8 @@ const createGame = (player1Socket, player2Socket) => {
   const newGame = GameService.init.gameState(); newGame['idGame'] = uniqid(); newGame['player1Socket'] = player1Socket; newGame['player2Socket'] = player2Socket;
   games.push(newGame);
   const gameIndex = GameService.utils.findGameIndexById(games, newGame.idGame);
-  games[gameIndex].player1Socket.emit('game.start', GameService.send.forPlayer.viewGameState('player:1', game
-  games[gameIndex].player2Socket.emit('game.start', GameService.send.forPlayer.viewGameState('player:2', game
+  games[gameIndex].player1Socket.emit('game.start', GameService.send.forPlayer.viewGameState('player:1', games[gameIndex]))
+  games[gameIndex].player2Socket.emit('game.start', GameService.send.forPlayer.viewGameState('player:2', games[gameIndex]))
 };
 // ---------------------------------------
 // -------- SOCKETS MANAGEMENT -----------
