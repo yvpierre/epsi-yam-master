@@ -13,11 +13,22 @@ const newPlayerInQueue = (socket) => {
   queue.push(socket);
   // Queue management
   if (queue.length >= 2) {
-    const player1Socket = queue.shift(); const player2Socket = queue.shift(); createGame(player1Socket, player2Socket);
+    const player1Socket = queue.shift();
+    const player2Socket = queue.shift();
+    createGame(player1Socket, player2Socket);
   } else {
     socket.emit('queue.added', GameService.send.forPlayer.viewQueueState());
   }
 };
+
+const ejectPlayerFromQueue = (socket) => {
+  queue.slice(queue.indexOf((elem) => elem.id === socket.id))
+}
+
+const ff = (socket) => {
+  games.slice(queue.indexOf((elem) => elem.id === socket.id))
+}
+
 const createGame = (player1Socket, player2Socket) => {
   const newGame = GameService.init.gameState(); newGame['idGame'] = uniqid(); newGame['player1Socket'] = player1Socket; newGame['player2Socket'] = player2Socket;
   games.push(newGame);
@@ -36,7 +47,16 @@ io.on('connection', socket => {
   });
   socket.on('disconnect', reason => {
     console.log(`[${socket.id}] socket disconnected - ${reason}`);
-  }); });
+  });
+  socket.on('queue.leave', () => {
+    console.log(`[${socket.id}] player ejected from the queue `)
+    ejectPlayerFromQueue(socket);
+  })
+  socket.on('queue.ff', () => {
+
+  })
+});
+
 // -----------------------------------
 // -------- SERVER METHODS -----------
 // -----------------------------------

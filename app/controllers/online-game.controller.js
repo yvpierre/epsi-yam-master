@@ -1,5 +1,5 @@
 // app/controller/online-game.controller.js
-import React, { useEffect, useState, useContext } from "react"; import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState, useContext } from "react"; import {Button, StyleSheet, Text, View} from "react-native";
 import { SocketContext } from '../contexts/socket.context';
 export default function OnlineGameController() { const socket = useContext(SocketContext);
     const [inQueue, setInQueue] = useState(false); const [inGame, setInGame] = useState(false);
@@ -20,19 +20,36 @@ export default function OnlineGameController() { const socket = useContext(Socke
             setInGame(data['inGame']);
             setIdOpponent(data['idOpponent']);
         }); }, []);
+
+    const quitQueue = () => {
+        socket.emit("queue.leave");
+        navigation.navigate('HomeScreen')
+    }
+
+    const forfeit = () => {
+        socket.emit("queue.ff")
+        navigation.navigate('HomeScreen')
+    }
+
     return (
         <View style={styles.container}>
             {!inQueue && !inGame && (
                 <>
                     <Text style={styles.paragraph}>
                         Waiting for server datas...
-                    </Text> </>
+                    </Text>
+                </>
             )}
             {inQueue && (
                 <>
                     <Text style={styles.paragraph}>
                         Waiting for another player...
-                    </Text> </>
+                    </Text>
+                    <Button
+                        title="Quitter la file"
+                        onPress={() => quitQueue()}
+                    />
+                </>
             )}
             {inGame && (
                 <>
@@ -47,7 +64,12 @@ export default function OnlineGameController() { const socket = useContext(Socke
                     </Text>
                     <Text style={styles.paragraph}>
                         Player - {idOpponent} -
-                    </Text> </>
+                    </Text>
+                    <Button
+                        title="Abandonner"
+                        onPress={() => forfeit()}
+                    />
+                </>
             )} </View>
     ); }
 
