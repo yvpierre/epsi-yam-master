@@ -2,7 +2,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SocketContext } from "../../../contexts/socket.context";
-import Dice from "./dice.component";
+import Dice from "../decks/dice.component";
+
 const OpponentDeck = () => {
     const socket = useContext(SocketContext);
     const [displayOpponentDeck, setDisplayOpponentDeck] = useState(false);
