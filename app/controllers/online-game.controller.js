@@ -1,6 +1,7 @@
 // app/controller/online-game.controller.js
 import React, { useEffect, useState, useContext } from "react"; import {Button, StyleSheet, Text, View} from "react-native";
 import { SocketContext } from '../contexts/socket.context';
+import Board from "../components/board/board.component";
 export default function OnlineGameController() { const socket = useContext(SocketContext);
     const [inQueue, setInQueue] = useState(false); const [inGame, setInGame] = useState(false);
     const [idOpponent, setIdOpponent] = useState(null);
@@ -20,6 +21,11 @@ export default function OnlineGameController() { const socket = useContext(Socke
             setInGame(data['inGame']);
             setIdOpponent(data['idOpponent']);
         }); }, []);
+        socket.on('queue.eject', (data) => {
+            console.log('[listen][queue.leave]');
+            setInQueue(data['inQueue'])
+            setInGame(data['inGame'])
+        })
 
     const quitQueue = () => {
         socket.emit("queue.leave");
@@ -53,24 +59,10 @@ export default function OnlineGameController() { const socket = useContext(Socke
             )}
             {inGame && (
                 <>
-                    <Text style={styles.paragraph}>
-                        Game found !
-                    </Text>
-                    <Text style={styles.paragraph}>
-                        Player - {socket.id} -
-                    </Text>
-                    <Text style={styles.paragraph}>
-                        - vs -
-                    </Text>
-                    <Text style={styles.paragraph}>
-                        Player - {idOpponent} -
-                    </Text>
-                    <Button
-                        title="Abandonner"
-                        onPress={() => forfeit()}
-                    />
+                    <Board />
                 </>
-            )} </View>
+            )}
+        </View>
     ); }
 
 const styles = StyleSheet.create({ container: {
