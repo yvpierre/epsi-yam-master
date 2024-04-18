@@ -17,10 +17,8 @@ const updateClientViewTimers = (game) => {
 }
 
 const viewDeckStateBothPlayers = (game) => {
-  setTimeout(() => {
     game.player1Socket.emit('game.deck.view-state', GameService.send.forPlayer.deckViewState('player:1',game.gameState));
     game.player2Socket.emit('game.deck.view-state', GameService.send.forPlayer.deckViewState('player:2',game.gameState));
-  }, 400)
 }
 const newPlayerInQueue = (socket) => {
   queue.push(socket);
@@ -43,16 +41,19 @@ const ff = (socket) => {
 
 const rollDices = (socket) => {
   const gameIndex = GameService.utils.findGameIndexBySocketId(games, socket.id);
-  // Pour les deux premiers lancers
-  games[gameIndex].gameState.deck.dices = GameService.dices.roll(games[gameIndex].gameState.deck.dices)
-  games[gameIndex].gameState.deck.rollsCounter++;
 
-  if(games[gameIndex].gameState.deck.rollsCounter === games[gameIndex].gameState.deck.rollsMaximum) {
-    games[gameIndex].gameState.deck.dices = GameService.dices.lockEveryDice(games[gameIndex].deck.dices);
-    games[gameIndex].gameState.timer = 5;
-  }
-  viewDeckStateBothPlayers(games[gameIndex])
+    games[gameIndex].gameState.deck.dices = GameService.dices.roll(games[gameIndex].gameState.deck.dices)
+    games[gameIndex].gameState.deck.rollsCounter++;
+
+    if(games[gameIndex].gameState.deck.rollsCounter > games[gameIndex].gameState.deck.rollsMaximum) {
+      games[gameIndex].gameState.deck.dices = GameService.dices.lockEveryDice(games[gameIndex].gameState.deck.dices);
+      games[gameIndex].gameState.timer = 5;
+    }
+
+    viewDeckStateBothPlayers(games[gameIndex])
 }
+
+
 
 const createGame = (player1Socket, player2Socket) => {
   const newGame = GameService.init.gameState();
@@ -74,7 +75,7 @@ const createGame = (player1Socket, player2Socket) => {
       // Méthode du service qui renvoie la constante 'TURN_DURATION'
       games[gameIndex].gameState.timer = GameService.timer.getTurnDuration();
       games[gameIndex].gameState.deck = GameService.init.deck()
-      viewGameStateBothPlayers(games[gameIndex])
+      viewDeckStateBothPlayers(games[gameIndex])
     }
     updateClientViewTimers(games[gameIndex])
   }, 1000);
