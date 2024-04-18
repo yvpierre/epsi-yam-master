@@ -1,35 +1,42 @@
-# Socket IO Example
+# EPSI - YAMS MASTER
 
-<p>
-  <!-- iOS -->
-  <a href="https://itunes.apple.com/app/apple-store/id982107779">
-    <img alt="Supports Expo iOS" longdesc="Supports Expo iOS" src="https://img.shields.io/badge/iOS-4630EB.svg?style=flat-square&logo=APPLE&labelColor=999999&logoColor=fff" />
-  </a>
-  <!-- Android -->
-  <a href="https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=blankexample">
-    <img alt="Supports Expo Android" longdesc="Supports Expo Android" src="https://img.shields.io/badge/Android-4630EB.svg?style=flat-square&logo=ANDROID&labelColor=A4C639&logoColor=fff" />
-  </a>
-  <!-- Web -->
-  <a href="https://docs.expo.dev/workflow/web/">
-    <img alt="Supports Expo Web" longdesc="Supports Expo Web" src="https://img.shields.io/badge/web-4630EB.svg?style=flat-square&logo=GOOGLE-CHROME&labelColor=4285F4&logoColor=fff" />
-  </a>
-</p>
+## TODO des choses à faire
+Menu principal:
+- Jouer
+- Replays
+- Paramètres
 
-This example shows how to connect and interact with socket-io backends.
+Modes de jeu:
+- Solo (vs bot)
+- Multi en ligne
+- Multi local
 
-## 🚀 How to use
+IA pour le bot: plus ou moins précis et des plus ou moins bonnes décisions
 
-### Running the app
+Menu en jeu:
+- Paramètres
+- Musique (on/off)
+- Abandonner
 
-- Run `yarn` or `npm install`
-- Open `App.js` and change the `socketEndpoint` at the top of the file to point to your endpoint.
-- Open `app` with `yarn start` or `npm run start` to try it out.
+Pour chaque mode de difficulté (bot plus dur et moins de temps):
+- Tranquille (2min/tour)
+- Normal (1min/tour)
+- Express (30sec/tour)
+- Impossible (15s/tour)
 
-### Running the server
+UI :
+- Typo et DA casino
 
-- `cd` into the `backend` directory and run `yarn` or `npm install`, then run `yarn start` or `npm run start`
-- Install [ngrok](https://ngrok.com/download) and run `ngrok http 3000` and copy the https url that looks something like this `https://f7333e87.ngrok.io`.
+Implémenter :
+- Docker pour lancer les différents serveurs
+- MMR (classement)
+- Animations
+- Nombre de joueurs en ligne
+- Bouton aide
+- Shi/Fu/Mi pour savoir qui commence la partie
+- Swagger pour le serveur web socket
+- setTimeout pour que le bot prenne un peu de temps à jouer
 
-## 📝 Notes
-
-React Native provides a socket-io compatible WebSocket implementation, some people get tripped up on the https requirement so this example helps to clarify how you can get it running.
+Notes/Questions:
+- Lock tous les dés d’un coup, pas à chaque fois qu’un dé change
+- Comment implémenter Docker dans le projet ? 

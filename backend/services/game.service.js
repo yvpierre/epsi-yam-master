@@ -25,12 +25,35 @@ const GAME_INIT = {
     }
 }
 
+const CHOICES_INIT = {
+    isDefi: false,
+    isSec: false,
+    idSelectedChoice: null,
+    availableChoices: [],
+};
+const ALL_COMBINATIONS = [
+    { value: 'Brelan1', id: 'brelan1' },
+    { value: 'Brelan2', id: 'brelan2' },
+    { value: 'Brelan3', id: 'brelan3' },
+    { value: 'Brelan4', id: 'brelan4' },
+    { value: 'Brelan5', id: 'brelan5' },
+    { value: 'Brelan6', id: 'brelan6' },
+    { value: 'Full', id: 'full' },
+    { value: 'Carré', id: 'carre' },
+    { value: 'Yam', id: 'yam' },
+    { value: 'Suite', id: 'suite' },
+    { value: '≤8', id: 'moinshuit' },
+    { value: 'Sec', id: 'sec' },
+    { value: 'Défi', id: 'defi' }
+];
+
 const GameService = {
     init: {
         gameState: () => {
             const game = { ...GAME_INIT };
             game['gameState']['timer'] = TURN_DURATION;
             game['gameState']['deck'] = { ...DECK_INIT };
+            game['gameState']['choices'] = { ...CHOICES_INIT };
             return game;
         },
         deck: () => {
