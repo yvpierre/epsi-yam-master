@@ -142,6 +142,9 @@ const GameService = {
                 }
             }
             return -1;
+        },
+        lockDiceById: (dices, idDice) => {
+            return
         }
     }
 }

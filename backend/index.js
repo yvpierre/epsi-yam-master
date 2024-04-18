@@ -53,8 +53,6 @@ const rollDices = (socket) => {
     viewDeckStateBothPlayers(games[gameIndex])
 }
 
-
-
 const createGame = (player1Socket, player2Socket) => {
   const newGame = GameService.init.gameState();
   newGame['idGame'] = uniqid();
@@ -99,6 +97,16 @@ const createGame = (player1Socket, player2Socket) => {
   });
 
 };
+
+const lockDices = (idDice, socketId) => {
+  const gameIndex = GameService.utils.findGameIndexBySocketId(games, socketId)
+  const diceIndex = GameService.utils.findDiceIndexByDiceId(games[gameIndex].gameState.deck.dices, idDice)
+
+  console.log(games[gameIndex].gameState.deck.dices[diceIndex].locked)
+  games[gameIndex].gameState.deck.dices[diceIndex].locked = !games[gameIndex].gameState.deck.dices[diceIndex].locked
+  viewDeckStateBothPlayers(games[gameIndex])
+}
+
 // ---------------------------------------
 // -------- SOCKETS MANAGEMENT -----------
 // ---------------------------------------
@@ -123,8 +131,7 @@ io.on('connection', socket => {
     rollDices(socket);
   });
   socket.on('game.dices.lock', (idDice) => {
-    // const gameIndex = GameService.utils.findGameIndexBySocketId(games, socket.id);
-    // const diceIndex = GameService.utils.findDiceIndexByDiceId(idDice);
+    lockDices(idDice, socket.id)
   })
 
 });

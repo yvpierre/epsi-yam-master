@@ -62,7 +62,8 @@ const PlayerDeck = () => {
         </View>
     );
 };
-const styles = StyleSheet.create({ deckPlayerContainer: {
+const styles = StyleSheet.create({
+    deckPlayerContainer: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
