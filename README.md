@@ -36,6 +36,7 @@ Implémenter :
 - Shi/Fu/Mi pour savoir qui commence la partie
 - Swagger pour le serveur web socket
 - setTimeout pour que le bot prenne un peu de temps à jouer
+- Pourcentage de chances d'avoir la combinaison de dés
 
 Notes/Questions:
 - Lock tous les dés d’un coup, pas à chaque fois qu’un dé change
