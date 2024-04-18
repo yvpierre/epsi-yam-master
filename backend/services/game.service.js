@@ -32,6 +32,7 @@ const CHOICES_INIT = {
     availableChoices: [],
 };
 const ALL_COMBINATIONS = [
+    {value: "Paire", id: "paire"},
     { value: 'Brelan1', id: 'brelan1' },
     { value: 'Brelan2', id: 'brelan2' },
     { value: 'Brelan3', id: 'brelan3' },
@@ -59,6 +60,9 @@ const GameService = {
         deck: () => {
             return { ...DECK_INIT };
         },
+        choices: () => {
+            return { ...CHOICES_INIT };
+        }
     },
     timer: {
         getTurnDuration: () => {
@@ -104,7 +108,54 @@ const GameService = {
                     rollsMaximum: gameState.deck.rollsMaximum,
                     dices: gameState.deck.dices
                 };
+            },
+            choicesViewState: (playerKey, gameState) => {
+                return {
+                    displayChoices: true,
+                    canMakeChoice: playerKey === gameState.currentTurn,
+                    idSelectedChoice: gameState.choices.idSelectedChoice,
+                    availableChoices: gameState.choices.availableChoices
+                };
             }
+        }
+    },
+    choices: {
+        findCombinations: (dices, isDefi, isSec) => {
+            const allCombinations = ALL_COMBINATIONS;
+            const availableCombinations = [];
+            const counts = Array(7).fill(0);
+            let des = Object.values(dices);
+
+            des.forEach((de) => {
+                counts[de.value - 1]++;
+            });
+
+            let hasPair = counts.some((x) => x >= 2);
+            // brelan
+            let threeOfAKindValue = counts.find((x) => x >= 3);
+            let hasThreeOfAKind = counts.some((x) => x >= 3);
+            // carreee
+            let hasFourOfAKind = counts.some((x) => x >= 4)
+            // yams bordel
+            let hasFiveOfAKind = counts.some((x) => x >= 5);
+            // full
+            let hasFull = counts.includes(2) && counts.includes(3);
+            // suite
+            let hasStraight = !counts.find((x) => x >= 1);
+            // total
+            let sum = counts.reduce((acc, elem, index) => acc + elem * index, 0);
+            // moins 2 huit
+            let isLessThanEqual8 = sum <= 8;
+
+            if (hasPair) availableCombinations.push(allCombinations.find(comb => comb.id === "paire"));
+            if (hasThreeOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "brelan"+threeOfAKindValue))
+            if (hasFourOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "carre"));
+            if (hasFiveOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "yam"));
+            if (hasFull) availableCombinations.push(allCombinations.find(comb => comb.id === "full"))
+            if (hasStraight) availableCombinations.push(allCombinations.find(comb => comb.id === "suite"))
+            if (isLessThanEqual8) availableCombinations.push(allCombinations.find(comb => comb.id === 'moinshuit'))
+
+            return availableCombinations;
         }
     },
     dices: {
