@@ -48,7 +48,7 @@ const rollDices = (socket) => {
   games[gameIndex].gameState.deck.rollsCounter++;
 
   if(games[gameIndex].gameState.deck.rollsCounter === games[gameIndex].gameState.deck.rollsMaximum) {
-    games[gameIndex].gameState.deck.dices = GameService.dices.lockEveryDice(games[gameIndex]);
+    games[gameIndex].gameState.deck.dices = GameService.dices.lockEveryDice(games[gameIndex].deck.dices);
     games[gameIndex].gameState.timer = 5;
   }
   viewDeckStateBothPlayers(games[gameIndex])
@@ -121,6 +121,10 @@ io.on('connection', socket => {
     console.log(`[${socket.id}] dices rolled`)
     rollDices(socket);
   });
+  socket.on('game.dices.lock', (idDice) => {
+    // const gameIndex = GameService.utils.findGameIndexBySocketId(games, socket.id);
+    // const diceIndex = GameService.utils.findDiceIndexByDiceId(idDice);
+  })
 
 });
 
