@@ -38,6 +38,11 @@ const viewChoicesStateBothPlayers = (game) => {
   game.player2Socket.emit('game.choices.view-state', GameService.send.forPlayer.choicesViewState('player:2', game.gameState))
 }
 
+const viewScoreStateBothPlayers = (game) => {
+  game.player1Socket.emit('game.score.view-state', GameService.send.forPlayer.scoreViewState('player:1', game.gameState))
+  game.player2Socket.emit('game.score.view-state', GameService.send.forPlayer.scoreViewState('player:2', game.gameState))
+}
+
 const newPlayerInQueue = (socket) => {
   queue.push(socket);
   // Queue management
@@ -123,8 +128,13 @@ const applySelectedChoiceToGrid = (socket, data) => {
   games[gameIndex].gameState.grid = GameService.grid.selectCell(data.cellId, data.rowIndex, data.cellIndex, games[gameIndex].gameState.currentTurn, games[gameIndex].gameState.grid);
 
   const score = GameService.grid.calculateScore(games[gameIndex].gameState.grid);
-  console.log(`Score: ${score}`);
 
+  games[gameIndex].gameState.player1Score = score.player1
+  games[gameIndex].gameState.player2Score = score.player2
+  console.log("scores")
+  console.log(games[gameIndex].gameState.player1Score)
+  console.log(games[gameIndex].gameState.player2Score)
+  console.log("scores")
   // TODO: Puis check si la partie s'arrête (lines / diagolales / no-more-gametokens)
   // const isGameOver = GameService.grid.checkGameOver(games[gameIndex].gameState.grid);
   /* if (isGameOver) {
@@ -150,6 +160,7 @@ const applySelectedChoiceToGrid = (socket, data) => {
   games[gameIndex].player2Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:2', games[gameIndex].gameState));
 
   // et on remet à jour la vue
+  viewScoreStateBothPlayers(games[gameIndex])
   updateClientViewChoices(games[gameIndex]);
   viewDeckStateBothPlayers(games[gameIndex]);
   viewGridStateBothPlayers(games[gameIndex]);

@@ -171,7 +171,14 @@ const GameService = {
                     canSelectCells: (playerKey === gameState.currentTurn) && (gameState.choices.availableChoices.length > 0),
                     grid: gameState.grid
                 };
-
+            },
+            scoreViewState: (playerKey, gameState) => {
+                const playerScore = gameState.currentTurn === playerKey ? gameState.player1Score : 0;
+                const opponentScore = gameState.currentTurn === playerKey ? 0 : gameState.player2Score;
+                return {
+                    playerScore: playerScore,
+                    opponentScore: opponentScore
+                };
             }
 
         }
@@ -197,7 +204,8 @@ const GameService = {
             // full
             let hasFull = counts.includes(2) && counts.includes(3);
             // suite
-            let hasStraight = !counts.find((x) => x > 1);
+            // on rajoute le OU || derrière pour vérifier que la suite à bien le premier ou le dernier index vide
+            let hasStraight = (!counts.find((x) => x > 1)) && (counts[0] === 0 || counts[counts.length-1] === 0);
             // total
             let sum = counts.reduce((acc, elem, index) => acc + (elem * index), 0);
             // moins 2 huit
@@ -242,19 +250,104 @@ const GameService = {
             }));
         },
         calculateScore: (grid) => {
-            // lignes
+            /*
+            Bon j'ai au final craqué et utilisé chatgpt pour fixer mon algo bancal mais je laisse la tentative en commentaire
+                        // lignes, colonnes et diag dans ce tableau
             rows = []
-            //  colonnes
-            columns = []
-            // diagonales
-            diag = []
             // on fait un double parcous pour indexer chaque valeur possible pour toutes les lignes/colonnes/diagonales
             // et ainsi pouvoir regarder combien d'enchaînements possible, donc de points
-            grid.map((row, indexX) =>
+            grid.map((row, indexX) => {
+                tempRow = []
+                tempCol = []
+                tempDiag = []
+                tempRow.push(row);
                 row.map((cell, indexY) => {
-                    rows.push(row[indexX].value)
-                }))
-            return
+                    tempCol.push(grid[indexY])
+                    tempDiag.push(row[indexX][indexY])
+                })
+                rows.push(tempRow)
+                rows.push(tempCol)
+                rows.push(tempDiag)
+            })
+            return rows
+             */
+            let counts = {
+                "player:1": { lineOf3: 0, lineOf4: 0, lineOf5: 0 },
+                "player:2": { lineOf3: 0, lineOf4: 0, lineOf5: 0 }
+            };
+
+            // Function to check if a given cell is within the bounds of the grid
+            function isValidCell(row, col) {
+                return row >= 0 && row < grid.length && col >= 0 && col < grid[0].length;
+            }
+
+            // Function to check if a given line contains only one player's cells
+            function isLineOfPlayer(line, player) {
+                return line.every(cell => cell.owner === player);
+            }
+
+            // Function to count lines of different lengths
+            function countLineLengths(line) {
+                let length = line.filter(cell => cell.owner !== null).length;
+                if (length === 3) {
+                    counts[line[0].owner].lineOf3++;
+                } else if (length === 4) {
+                    counts[line[0].owner].lineOf4++;
+                    counts[line[0].owner].lineOf3 = 0; // Reset count of lines of length 3
+                } else if (length === 5) {
+                    counts[line[0].owner].lineOf5++;
+                    counts[line[0].owner].lineOf4 = 0; // Reset count of lines of length 4
+                    counts[line[0].owner].lineOf3 = 0; // Reset count of lines of length 3
+                }
+            }
+
+            // Check horizontal lines
+            for (let row = 0; row < grid.length; row++) {
+                for (let col = 0; col < grid[row].length - 2; col++) {
+                    let line = [grid[row][col], grid[row][col + 1], grid[row][col + 2]];
+                    if (isLineOfPlayer(line, grid[row][col].owner)) {
+                        countLineLengths(line);
+                    }
+                }
+            }
+
+            // Check vertical lines
+            for (let col = 0; col < grid[0].length; col++) {
+                for (let row = 0; row < grid.length - 2; row++) {
+                    let line = [grid[row][col], grid[row + 1][col], grid[row + 2][col]];
+                    if (isLineOfPlayer(line, grid[row][col].owner)) {
+                        countLineLengths(line);
+                    }
+                }
+            }
+
+            // Check diagonal lines (top-left to bottom-right)
+            for (let row = 0; row < grid.length - 2; row++) {
+                for (let col = 0; col < grid[row].length - 2; col++) {
+                    let line = [grid[row][col], grid[row + 1][col + 1], grid[row + 2][col + 2]];
+                    if (isLineOfPlayer(line, grid[row][col].owner)) {
+                        countLineLengths(line);
+                    }
+                }
+            }
+
+            // Check diagonal lines (top-right to bottom-left)
+            for (let row = 0; row < grid.length - 2; row++) {
+                for (let col = 2; col < grid[row].length; col++) {
+                    let line = [grid[row][col], grid[row + 1][col - 1], grid[row + 2][col - 2]];
+                    if (isLineOfPlayer(line, grid[row][col].owner)) {
+                        countLineLengths(line);
+                    }
+                }
+            }
+
+            // On reaffecte ensuite les valeurs de notre bareme (idealement, le foutre en constante pour ne l'avoir qu'a un seul endroit
+            let res = {
+                player1: (counts["player:1"].lineOf3*10)+(counts["player:1"].lineOf4*20)+(counts["player:1"].lineOf5*1000),
+                player2: (counts["player:2"].lineOf3*10)+(counts["player:2"].lineOf4*20)+(counts["player:2"].lineOf5*1000),
+            }
+
+            return res;
         },
         getUnavailableChoices: (grid) => {
             let res = []

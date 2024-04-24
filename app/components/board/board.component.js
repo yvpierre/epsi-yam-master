@@ -1,5 +1,5 @@
 // app/components/board/board.component.js
-import React from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {View, Text, StyleSheet, PlatformColor} from 'react-native';
 import OpponentTimerComponent from "./timers/opponent-timer.component";
 import PlayerTimerComponent from "./timers/player-timer.component";
@@ -8,6 +8,7 @@ import PlayerDeck from "./player-deck/player-deck.component";
 import OpponentDeck from "./opponent-deck/opponent-deck.component";
 import GridComponent from "./grid/grid.component";
 import ChoicesComponent from "./choices/choices.component";
+import {socket, SocketContext} from "../../contexts/socket.context";
 const OpponentInfos = () => {
     return (
     <View style={styles.opponentInfosContainer}>
@@ -17,11 +18,20 @@ const OpponentInfos = () => {
 };
 
 const OpponentScore = () => {
+    const socket = useContext(SocketContext);
+    const [opponentScore, setOpponentScore] = useState(0);
+
+    useEffect(() => {
+        socket.on("game.score.view-state", (data) => {
+            setOpponentScore(data['player2Score'])
+        })
+    }, []);
+
     return (
-    <View style={styles.opponentScoreContainer}>
-        <Text>Score: </Text>
-    </View>
-);
+        <View style={styles.playerScoreContainer}>
+            <Text>Score : {opponentScore}</Text>
+        </View>
+    );
 };
 const PlayerInfos = () => {
     return (
@@ -31,9 +41,18 @@ const PlayerInfos = () => {
 );
 };
 const PlayerScore = () => {
+    const socket = useContext(SocketContext);
+    const [playerScore, setPlayerScore] = useState(0);
+
+    useEffect(() => {
+        socket.on("game.score.view-state", (data) => {
+            setPlayerScore(data['player1Score'])
+        })
+    }, []);
+
     return (
         <View style={styles.playerScoreContainer}>
-            <Text>PlayerScore</Text>
+            <Text>Score : {playerScore}</Text>
         </View>
     );
 };
