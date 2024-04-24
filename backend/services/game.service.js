@@ -31,6 +31,46 @@ const CHOICES_INIT = {
     idSelectedChoice: null,
     availableChoices: [],
 };
+
+const GRID_INIT = [
+    [
+        { viewContent: '1', id: 'brelan1', owner: null, canBeChecked: false },
+        { viewContent: '3', id: 'brelan3', owner: null, canBeChecked: false },
+        { viewContent: 'Défi', id: 'defi', owner: null, canBeChecked: false },
+        { viewContent: '4', id: 'brelan4', owner: null, canBeChecked: false },
+        { viewContent: '6', id: 'brelan6', owner: null, canBeChecked: false },
+    ],
+    [
+        { viewContent: '2', id: 'brelan2', owner: null, canBeChecked: false },
+        { viewContent: 'Carré', id: 'carre', owner: null, canBeChecked: false },
+        { viewContent: 'Sec', id: 'sec', owner: null, canBeChecked: false },
+        { viewContent: 'Full', id: 'full', owner: null, canBeChecked: false },
+        { viewContent: '5', id: 'brelan5', owner: null, canBeChecked: false },
+    ],
+    [
+        { viewContent: '≤8', id: 'moinshuit', owner: null, canBeChecked: false },
+        { viewContent: 'Full', id: 'full', owner: null, canBeChecked: false },
+        { viewContent: 'Yam', id: 'yam', owner: null, canBeChecked: false },
+        { viewContent: 'Défi', id: 'defi', owner: null, canBeChecked: false },
+        { viewContent: 'Suite', id: 'suite', owner: null, canBeChecked: false },
+    ],
+    [
+        { viewContent: '6', id: 'brelan6', owner: null, canBeChecked: false },
+        { viewContent: 'Sec', id: 'sec', owner: null, canBeChecked: false },
+        { viewContent: 'Suite', id: 'suite', owner: null, canBeChecked: false },
+        { viewContent: '≤8', id: 'moinshuit', owner: null, canBeChecked: false },
+        { viewContent: '1', id: 'brelan1', owner: null, canBeChecked: false },
+    ],
+    [
+        { viewContent: '3', id: 'brelan3', owner: null, canBeChecked: false },
+        { viewContent: '2', id: 'brelan2', owner: null, canBeChecked: false },
+        { viewContent: 'Carré', id: 'carre', owner: null, canBeChecked: false },
+        { viewContent: '5', id: 'brelan5', owner: null, canBeChecked: false },
+        { viewContent: '4', id: 'brelan4', owner: null, canBeChecked: false },
+    ]
+];
+
+
 const ALL_COMBINATIONS = [
     {value: "Paire", id: "paire"},
     { value: 'Brelan1', id: 'brelan1' },
@@ -48,6 +88,8 @@ const ALL_COMBINATIONS = [
     { value: 'Défi', id: 'defi' }
 ];
 
+
+
 const GameService = {
     init: {
         gameState: () => {
@@ -55,6 +97,7 @@ const GameService = {
             game['gameState']['timer'] = TURN_DURATION;
             game['gameState']['deck'] = { ...DECK_INIT };
             game['gameState']['choices'] = { ...CHOICES_INIT };
+            game['gameState']['grid'] = [ ...GRID_INIT];
             return game;
         },
         deck: () => {
@@ -62,6 +105,10 @@ const GameService = {
         },
         choices: () => {
             return { ...CHOICES_INIT };
+        },
+
+        grid: () => {
+            return { ...GRID_INIT };
         }
     },
     timer: {
@@ -116,11 +163,22 @@ const GameService = {
                     idSelectedChoice: gameState.choices.idSelectedChoice,
                     availableChoices: gameState.choices.availableChoices
                 };
+            },
+            gridViewState: (playerKey, gameState) => {
+
+                return {
+                    displayGrid: true,
+                    canSelectCells: (playerKey === gameState.currentTurn) && (gameState.choices.availableChoices.length > 0),
+                    grid: gameState.grid
+                };
+
             }
+
         }
     },
     choices: {
         findCombinations: (dices, isDefi, isSec) => {
+            console.log("dices", dices);
             const allCombinations = ALL_COMBINATIONS;
             const availableCombinations = [];
             const counts = Array(7).fill(0);
@@ -158,6 +216,52 @@ const GameService = {
             return availableCombinations;
         }
     },
+
+    grid: {
+
+        resetcanBeCheckedCells: (grid) => {
+            const updatedGrid = // TODO
+
+            // La grille retournée doit avoir le flag 'canBeChecked' de toutes les cases de la 'grid' à false
+            grid.map(row => row.map(cell => ({ ...cell, canBeChecked: false })));
+
+
+            return updatedGrid;
+        },
+
+        updateGridAfterSelectingChoice: (idSelectedChoice, grid) => {
+
+            const updatedGrid = // TODO
+
+            // La grille retournée doit avoir toutes les 'cells' qui ont le même 'id' que le 'idSelectedChoice' à 'canBeChecked: true'
+            grid.map(row => row.map(cell => {
+                if (cell.id === idSelectedChoice) {
+                    return { ...cell, canBeChecked: true };
+                } else {
+                    return cell;
+                }
+            }));
+
+            return updatedGrid;
+        },
+
+        selectCell: (idCell, rowIndex, cellIndex, currentTurn, grid) => {
+            const updatedGrid = // TODO
+
+            // La grille retournée doit avoir avoir la case selectionnée par le joueur du tour en cours à 'owner: currentTurn'
+            grid.map((row, rowIndex) => row.map((cell, cellIndex) => {
+                if (rowIndex === rowIndex && cellIndex === cellIndex) {
+                    return { ...cell, owner: currentTurn };
+                } else {
+                    return cell;
+                }
+            }));
+            // Nous avons besoin de rowIndex et cellIndex pour différencier les deux combinaisons similaires du plateau
+            return updatedGrid;
+        }
+
+    },
+
     dices: {
         roll: (dicesToRoll) => {
             if (!dicesToRoll) {
