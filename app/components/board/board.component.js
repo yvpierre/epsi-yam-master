@@ -6,6 +6,8 @@ import PlayerTimerComponent from "./timers/player-timer.component";
 import PlayerDeckComponent from "./player-deck/player-deck.component";
 import PlayerDeck from "./player-deck/player-deck.component";
 import OpponentDeck from "./opponent-deck/opponent-deck.component";
+import GridComponent from "./grid/grid.component";
+import ChoicesComponent from "./choices/choices.component";
 const OpponentInfos = () => {
     return (
     <View style={styles.opponentInfosContainer}>
@@ -21,22 +23,6 @@ const OpponentScore = () => {
     </View>
 );
 };
-
-const Grid = () => {
-    return (
-        <View style={styles.gridContainer}>
-            <Text>Grid</Text>
-        </View>
-    );
-};
-const Choices = () => {
-    return (
-        <View style={styles.choicesContainer}>
-            <Text>Choices</Text>
-        </View>
-    );
-};
-
 const PlayerInfos = () => {
     return (
     <View style={styles.playerInfosContainer}>
@@ -65,8 +51,8 @@ const Board = ({ gameViewState}) => {
                 <OpponentDeck />
             </View>
             <View style={[styles.row, { height: '40%' }]}>
-                <Grid />
-                <Choices />
+                <GridComponent />
+                <ChoicesComponent />
             </View>
             <View style={[styles.row, { height: '25%' }]}>
                 <PlayerDeck />
