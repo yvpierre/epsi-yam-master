@@ -72,7 +72,6 @@ const GRID_INIT = [
 
 
 const ALL_COMBINATIONS = [
-    {value: "Paire", id: "paire"},
     { value: 'Brelan1', id: 'brelan1' },
     { value: 'Brelan2', id: 'brelan2' },
     { value: 'Brelan3', id: 'brelan3' },
@@ -165,7 +164,6 @@ const GameService = {
                 };
             },
             gridViewState: (playerKey, gameState) => {
-
                 return {
                     displayGrid: true,
                     canSelectCells: (playerKey === gameState.currentTurn) && (gameState.choices.availableChoices.length > 0),
@@ -188,9 +186,8 @@ const GameService = {
                 counts[de.value - 1]++;
             });
 
-            let hasPair = counts.some((x) => x >= 2);
             // brelan
-            let threeOfAKindValue = counts.find((x) => x >= 3);
+            let threeOfAKindValue = counts.findIndex(x => x >= 3) + 1;
             let hasThreeOfAKind = counts.some((x) => x >= 3);
             // carreee
             let hasFourOfAKind = counts.some((x) => x >= 4)
@@ -205,7 +202,10 @@ const GameService = {
             // moins 2 huit
             let isLessThanEqual8 = sum <= 8;
 
-            if (hasPair) availableCombinations.push(allCombinations.find(comb => comb.id === "paire"));
+            console.log("val brelan")
+            console.log(threeOfAKindValue)
+            console.log("val brelan")
+
             if (hasThreeOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "brelan"+threeOfAKindValue))
             if (hasFourOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "carre"));
             if (hasFiveOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "yam"));
@@ -213,53 +213,41 @@ const GameService = {
             if (hasStraight) availableCombinations.push(allCombinations.find(comb => comb.id === "suite"))
             if (isLessThanEqual8) availableCombinations.push(allCombinations.find(comb => comb.id === 'moinshuit'))
 
+            console.log("combinaisons")
+            console.log(availableCombinations)
+            console.log("combinaisons")
+
             return availableCombinations;
         }
     },
 
+    // Returns en inlines suite a des suggestions de Webstorm
     grid: {
-
         resetcanBeCheckedCells: (grid) => {
-            const updatedGrid = // TODO
-
-            // La grille retournée doit avoir le flag 'canBeChecked' de toutes les cases de la 'grid' à false
-            grid.map(row => row.map(cell => ({ ...cell, canBeChecked: false })));
-
-
-            return updatedGrid;
+            return grid.map(row => row.map(cell => {
+                return {...cell, canBeChecked: false};
+            }));
         },
 
         updateGridAfterSelectingChoice: (idSelectedChoice, grid) => {
-
-            const updatedGrid = // TODO
-
-            // La grille retournée doit avoir toutes les 'cells' qui ont le même 'id' que le 'idSelectedChoice' à 'canBeChecked: true'
-            grid.map(row => row.map(cell => {
-                if (cell.id === idSelectedChoice) {
-                    return { ...cell, canBeChecked: true };
+            return grid.map(row => row.map(cell => {
+                if (cell.id === idSelectedChoice && cell.owner === null) {
+                    return {...cell, canBeChecked: true};
                 } else {
                     return cell;
                 }
             }));
-
-            return updatedGrid;
         },
 
         selectCell: (idCell, rowIndex, cellIndex, currentTurn, grid) => {
-            const updatedGrid = // TODO
-
-            // La grille retournée doit avoir avoir la case selectionnée par le joueur du tour en cours à 'owner: currentTurn'
-            grid.map((row, rowIndex) => row.map((cell, cellIndex) => {
-                if (rowIndex === rowIndex && cellIndex === cellIndex) {
-                    return { ...cell, owner: currentTurn };
+            return grid.map((row, rowIndexParsing) => row.map((cell, cellIndexParsing) => {
+                if ((cell.id === idCell) && (rowIndexParsing === rowIndex) && (cellIndexParsing === cellIndex)) {
+                    return {...cell, owner: currentTurn};
                 } else {
                     return cell;
                 }
             }));
-            // Nous avons besoin de rowIndex et cellIndex pour différencier les deux combinaisons similaires du plateau
-            return updatedGrid;
         }
-
     },
 
     dices: {

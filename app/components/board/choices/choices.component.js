@@ -1,23 +1,35 @@
-// app/components/board/choices/choices.component.js
-import {SocketContext} from "../../../contexts/socket.context";
-import {useContext, useEffect, useState} from "react";
-import {TouchableOpacity, View} from "react-native";
+// choices.component.js
+import React, { useState, useEffect, useContext } from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { SocketContext } from "../../../contexts/socket.context";
 
 const Choices = () => {
+
     const socket = useContext(SocketContext);
-    const [displayChoices, setDisplayChoices] = useState(false); const [canMakeChoice, setCanMakeChoice] = useState(false); const [idSelectedChoice, setIdSelectedChoice] = useState(null); const [availableChoices, setAvailableChoices] = useState([]);
+
+    const [displayChoices, setDisplayChoices] = useState(false);
+    const [canMakeChoice, setCanMakeChoice] = useState(false);
+    const [idSelectedChoice, setIdSelectedChoice] = useState(null);
+    const [availableChoices, setAvailableChoices] = useState([]);
+
     useEffect(() => {
+
         socket.on("game.choices.view-state", (data) => {
             setDisplayChoices(data['displayChoices']);
             setCanMakeChoice(data['canMakeChoice']);
             setIdSelectedChoice(data['idSelectedChoice']);
             setAvailableChoices(data['availableChoices']);
-        }); }, []);
+        });
+
+    }, []);
 
     const handleSelectChoice = (choiceId) => {
+
         if (canMakeChoice) {
-            setIdSelectedChoice(choiceId); socket.emit("game.choices.selected", { choiceId });
+            setIdSelectedChoice(choiceId);
+            socket.emit("game.choices.selected", { choiceId });
         }
+
     };
 
     return (
@@ -41,8 +53,9 @@ const Choices = () => {
     );
 };
 
-const styles = StyleSheet.create({ choicesContainer: {
-        flex: 1,
+const styles = StyleSheet.create({
+    choicesContainer: {
+        flex: 3,
         flexDirection: "row",
         flexWrap: "wrap",
         justifyContent: "space-between",
@@ -69,5 +82,7 @@ const styles = StyleSheet.create({ choicesContainer: {
     },
     disabledChoice: {
         opacity: 0.5,
-    }, });
+    },
+});
+
 export default Choices;
