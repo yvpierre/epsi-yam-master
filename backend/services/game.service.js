@@ -197,7 +197,7 @@ const GameService = {
             // full
             let hasFull = counts.includes(2) && counts.includes(3);
             // suite
-            let hasStraight = !counts.find((x) => x >= 1);
+            let hasStraight = !counts.find((x) => x > 1);
             // total
             let sum = counts.reduce((acc, elem, index) => acc + (elem * index), 0);
             // moins 2 huit
