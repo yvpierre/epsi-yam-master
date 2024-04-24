@@ -30,6 +30,8 @@ const CHOICES_INIT = {
     isSec: false,
     idSelectedChoice: null,
     availableChoices: [],
+    // Quand un choix est déjà marqué deux fois sur la grille, sauf pour le yam (1 fois suffit)
+    notAvailableChoices : [],
 };
 
 const GRID_INIT = [
@@ -176,7 +178,6 @@ const GameService = {
     },
     choices: {
         findCombinations: (dices, isDefi, isSec) => {
-            console.log("dices", dices);
             const allCombinations = ALL_COMBINATIONS;
             const availableCombinations = [];
             const counts = Array(7).fill(0);
@@ -198,13 +199,9 @@ const GameService = {
             // suite
             let hasStraight = !counts.find((x) => x >= 1);
             // total
-            let sum = counts.reduce((acc, elem, index) => acc + elem * index, 0);
+            let sum = counts.reduce((acc, elem, index) => acc + (elem * index), 0);
             // moins 2 huit
             let isLessThanEqual8 = sum <= 8;
-
-            console.log("val brelan")
-            console.log(threeOfAKindValue)
-            console.log("val brelan")
 
             if (hasThreeOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "brelan"+threeOfAKindValue))
             if (hasFourOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "carre"));
@@ -212,10 +209,6 @@ const GameService = {
             if (hasFull) availableCombinations.push(allCombinations.find(comb => comb.id === "full"))
             if (hasStraight) availableCombinations.push(allCombinations.find(comb => comb.id === "suite"))
             if (isLessThanEqual8) availableCombinations.push(allCombinations.find(comb => comb.id === 'moinshuit'))
-
-            console.log("combinaisons")
-            console.log(availableCombinations)
-            console.log("combinaisons")
 
             return availableCombinations;
         }
@@ -247,6 +240,40 @@ const GameService = {
                     return cell;
                 }
             }));
+        },
+        calculateScore: (grid) => {
+            // lignes
+            rows = []
+            //  colonnes
+            columns = []
+            // diagonales
+            diag = []
+            // on fait un double parcous pour indexer chaque valeur possible pour toutes les lignes/colonnes/diagonales
+            // et ainsi pouvoir regarder combien d'enchaînements possible, donc de points
+            grid.map((row, indexX) =>
+                row.map((cell, indexY) => {
+                    rows.push(row[indexX].value)
+                }))
+            return
+        },
+        getUnavailableChoices: (grid) => {
+            let res = []
+            grid.map((row, indexX) => {
+                row.map((cell, indexY) => {
+                    if(cell.owner){
+                        res.push(cell.id)
+                    }
+            })})
+            let counts = {};
+            res.forEach(val => {
+                counts[val] = (counts[val] || 0) + 1;
+            });
+
+            return Object.keys(counts).map(key => {
+                let obj = {};
+                obj[key] = counts[key];
+                return obj;
+            });
         }
     },
 
@@ -309,9 +336,6 @@ const GameService = {
             }
             return -1;
         },
-        lockDiceById: (dices, idDice) => {
-            return
-        }
     }
 }
 module.exports = GameService;

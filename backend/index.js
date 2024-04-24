@@ -61,28 +61,43 @@ const rollDices = (socket) => {
   // combinations management
   const gameIndex = GameService.utils.findGameIndexBySocketId(games, socket.id);
 
-
   games[gameIndex].gameState.deck.dices = GameService.dices.roll(games[gameIndex].gameState.deck.dices);
   games[gameIndex].gameState.deck.rollsCounter++;
 
-    if(games[gameIndex].gameState.deck.rollsCounter > games[gameIndex].gameState.deck.rollsMaximum) {
-      games[gameIndex].gameState.deck.dices = GameService.dices.lockEveryDice(games[gameIndex].gameState.deck.dices);
-      games[gameIndex].gameState.timer = 5;
-    }
+  if(games[gameIndex].gameState.deck.rollsCounter > games[gameIndex].gameState.deck.rollsMaximum) {
+    games[gameIndex].gameState.deck.dices = GameService.dices.lockEveryDice(games[gameIndex].gameState.deck.dices);
+    games[gameIndex].gameState.timer = 5;
+  }
 
-    const dices = games[gameIndex].gameState.deck.dices;
-    const isDefi = false;
-    const isSec = games[gameIndex].gameState.deck.rollsCounter === 2;
+  const dices = games[gameIndex].gameState.deck.dices;
+  const isDefi = false;
+  const isSec = games[gameIndex].gameState.deck.rollsCounter === 2;
 
-    const combinations = GameService.choices.findCombinations(dices, isDefi, isSec);
-    // we affect changes to gameState
+  const combinations = GameService.choices.findCombinations(dices, isDefi, isSec);
 
-    games[gameIndex].gameState.choices.availableChoices = combinations;
+  // Get unavailable choices from the grid
+  const unavailable = GameService.grid.getUnavailableChoices(games[gameIndex].gameState.grid);
 
-    updateClientViewChoices(games[gameIndex]);
-    viewDeckStateBothPlayers(games[gameIndex]);
-    viewGridStateBothPlayers(games[gameIndex]);
-    viewChoicesStateBothPlayers(games[gameIndex])
+  // Filter out combinations where all cells for that value are already taken
+  let filteredCombinations = combinations.filter(combi => {
+    // Extract the value of the combination (e.g., '6' from 'Brelan (6)')
+    const value = combi.value.split(' ').pop();
+
+    // Check if any cell for this value is available
+    return !unavailable.some(elem => {
+      const key = Object.keys(elem)[0];
+      const elemValue = parseInt(key.slice(-1));
+      return elem[key] < 2 && elemValue === parseInt(value);
+    });
+  });
+
+  games[gameIndex].gameState.choices.availableChoices = filteredCombinations;
+
+  // Update client views
+  updateClientViewChoices(games[gameIndex]);
+  viewDeckStateBothPlayers(games[gameIndex]);
+  viewGridStateBothPlayers(games[gameIndex]);
+  viewChoicesStateBothPlayers(games[gameIndex]);
 }
 
 const selectedChoice = (socket, data) => {
@@ -104,14 +119,11 @@ const selectedChoice = (socket, data) => {
 const applySelectedChoiceToGrid = (socket, data) => {
   const gameIndex = GameService.utils.findGameIndexBySocketId(games, socket.id);
 
-  // La sélection d'une cellule signifie la fin du tour (ou plus tard le check des conditions de victoires)
-  // On reset l'état des cases qui étaient précédemment clicables.
   games[gameIndex].gameState.grid = GameService.grid.resetcanBeCheckedCells(games[gameIndex].gameState.grid);
   games[gameIndex].gameState.grid = GameService.grid.selectCell(data.cellId, data.rowIndex, data.cellIndex, games[gameIndex].gameState.currentTurn, games[gameIndex].gameState.grid);
 
-  // TODO: Ici calculer le score
-  // const score = GameService.grid.calculateScore(games[gameIndex].gameState.grid);
-  // console.log(`Score: ${score}`);
+  const score = GameService.grid.calculateScore(games[gameIndex].gameState.grid);
+  console.log(`Score: ${score}`);
 
   // TODO: Puis check si la partie s'arrête (lines / diagolales / no-more-gametokens)
   // const isGameOver = GameService.grid.checkGameOver(games[gameIndex].gameState.grid);
