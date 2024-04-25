@@ -298,15 +298,21 @@ const GameService = {
                 // Check if all cells in the line belong to the same player
                 if (line.length > 0 && line.every(cell => cell.owner === line[0].owner && cell.owner !== null)) {
                     let length = line.length;
-                    if (length === 3) {
-                        counts[line[0].owner].lineOf3++;
-                    } else if (length === 4) {
-                        counts[line[0].owner].lineOf4++;
-                        counts[line[0].owner].lineOf3 = 0; // Reset count of lines of length 3
-                    } else if (length === 5) {
+                    let chainOf5 = false;
+                    let chainOf4 = false;
+                    let chainOf3 = false;
+                    if (length === 5) {
                         counts[line[0].owner].lineOf5++;
-                        counts[line[0].owner].lineOf4 = 0; // Reset count of lines of length 4
-                        counts[line[0].owner].lineOf3 = 0; // Reset count of lines of length 3
+                        counts[line[0].owner].lineOf4 -= 1; // Reset count of lines of length 4
+                        counts[line[0].owner].lineOf3 -= 1; // Reset count of lines of length 3
+                        chainOf5 = true
+                    } else if (length === 4 && !chainOf5) {
+                        counts[line[0].owner].lineOf4++;
+                        counts[line[0].owner].lineOf3 = -1; // Reset count of lines of length 3
+                        chainOf4 = true
+                    } else if (length === 3 && !chainOf5 && !chainOf4) {
+                        counts[line[0].owner].lineOf3++;
+                        chainOf3 = true
                     }
                 }
             }
@@ -409,6 +415,8 @@ const GameService = {
             }
 
 
+            if(counts["player:1"].lineOf3 < 0) counts["player:1"].lineOf3 = 0
+            if(counts["player:1"].lineOf4 < 0) counts["player:1"].lineOf3 = 0
 
             // On reaffecte ensuite les valeurs de notre bareme (idealement, le foutre en constante pour ne l'avoir qu'a un seul endroit
             let res = {
