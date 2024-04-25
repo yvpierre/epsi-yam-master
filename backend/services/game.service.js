@@ -173,8 +173,8 @@ const GameService = {
                 };
             },
             scoreViewState: (playerKey, gameState) => {
-                const playerScore = gameState.currentTurn === playerKey ? gameState.player1Score : 0;
-                const opponentScore = gameState.currentTurn === playerKey ? 0 : gameState.player2Score;
+                const playerScore = playerKey === 'player:1' ? gameState.player1Score : gameState.player2Score;
+                const opponentScore = playerKey === 'player:1' ? gameState.player2Score : gameState.player1Score;
                 return {
                     playerScore: playerScore,
                     opponentScore: opponentScore

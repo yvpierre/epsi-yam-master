@@ -23,7 +23,7 @@ const OpponentScore = () => {
 
     useEffect(() => {
         socket.on("game.score.view-state", (data) => {
-            setOpponentScore(data['player2Score'])
+            setOpponentScore(data['opponentScore'])
         })
     }, []);
 
@@ -46,7 +46,7 @@ const PlayerScore = () => {
 
     useEffect(() => {
         socket.on("game.score.view-state", (data) => {
-            setPlayerScore(data['player1Score'])
+            setPlayerScore(data['playerScore'])
         })
     }, []);
 

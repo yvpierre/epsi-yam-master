@@ -13,34 +13,40 @@ const updateClientViewTimers = (game) => {
   setTimeout(() => {
     game.player1Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:1', game.gameState));
     game.player2Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:2', game.gameState));
-  }, 400)
+  }, 200)
 }
 
 const updateClientViewChoices = (game) => {
   setTimeout( () => {
     game.player1Socket.emit("game.choices.view-state", GameService.send.forPlayer.choicesViewState('player:1', game.gameState))
     game.player2Socket.emit("game.choices.view-state", GameService.send.forPlayer.choicesViewState('player:2', game.gameState))
-  }, 400)
+  }, 200)
 }
 
 const viewDeckStateBothPlayers = (game) => {
+  setTimeout( () => {
     game.player1Socket.emit('game.deck.view-state', GameService.send.forPlayer.deckViewState('player:1',game.gameState));
     game.player2Socket.emit('game.deck.view-state', GameService.send.forPlayer.deckViewState('player:2',game.gameState));
+  }, 200)
 }
 
 const viewGridStateBothPlayers = (game) => {
-  game.player1Socket.emit('game.grid.view-state', GameService.send.forPlayer.gridViewState('player:1', game.gameState))
-  game.player2Socket.emit('game.grid.view-state', GameService.send.forPlayer.gridViewState('player:2', game.gameState))
-}
+  setTimeout(() => {
+    game.player1Socket.emit('game.grid.view-state', GameService.send.forPlayer.gridViewState('player:1', game.gameState))
+    game.player2Socket.emit('game.grid.view-state', GameService.send.forPlayer.gridViewState('player:2', game.gameState))
+  }, 200)}
 
 const viewChoicesStateBothPlayers = (game) => {
-  game.player1Socket.emit('game.choices.view-state', GameService.send.forPlayer.choicesViewState('player:1', game.gameState))
-  game.player2Socket.emit('game.choices.view-state', GameService.send.forPlayer.choicesViewState('player:2', game.gameState))
-}
+  setTimeout(() => {
+    game.player1Socket.emit('game.choices.view-state', GameService.send.forPlayer.choicesViewState('player:1', game.gameState))
+    game.player2Socket.emit('game.choices.view-state', GameService.send.forPlayer.choicesViewState('player:2', game.gameState))
+  }, 200)}
 
 const viewScoreStateBothPlayers = (game) => {
-  game.player1Socket.emit('game.score.view-state', GameService.send.forPlayer.scoreViewState('player:1', game.gameState))
-  game.player2Socket.emit('game.score.view-state', GameService.send.forPlayer.scoreViewState('player:2', game.gameState))
+  setTimeout(() => {
+    game.player1Socket.emit('game.score.view-state', GameService.send.forPlayer.scoreViewState('player:1', game.gameState))
+    game.player2Socket.emit('game.score.view-state', GameService.send.forPlayer.scoreViewState('player:2', game.gameState))
+  }, 200)
 }
 
 const newPlayerInQueue = (socket) => {
