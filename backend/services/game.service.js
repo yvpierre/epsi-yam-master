@@ -1,5 +1,6 @@
 // websocket-server/services/game.service.js
 const TURN_DURATION = 45;
+const NB_PIONS = 12;
 
 const DECK_INIT = {
     dices: [
@@ -21,7 +22,9 @@ const GAME_INIT = {
         player2Score: 0,
         grid: [],
         choices: {},
-        deck: {}
+        deck: {},
+        player1Puns: NB_PIONS,
+        player2Puns: NB_PIONS,
     }
 }
 
@@ -207,7 +210,7 @@ const GameService = {
             // on rajoute le OU || derrière pour vérifier que la suite à bien le premier ou le dernier index vide
             let hasStraight = (!counts.find((x) => x > 1)) && (counts[0] === 0 || counts[counts.length-1] === 0);
             // total
-            let sum = counts.reduce((acc, elem, index) => acc + (elem * index), 0);
+            let sum = counts.reduce((acc, elem, index) => acc + (elem * index-1), 0);
             // moins 2 huit
             let isLessThanEqual8 = sum <= 8;
 
@@ -283,68 +286,134 @@ const GameService = {
 
             // Function to check if a given line contains only one player's cells
             function isLineOfPlayer(line, player) {
-                return line.every(cell => cell.owner === player);
+                return line.every(cell => cell && cell.owner === player);
             }
+
 
             // Function to count lines of different lengths
             function countLineLengths(line) {
-                let length = line.filter(cell => cell.owner !== null).length;
-                if (length === 3) {
-                    counts[line[0].owner].lineOf3++;
-                } else if (length === 4) {
-                    counts[line[0].owner].lineOf4++;
-                    counts[line[0].owner].lineOf3 = 0; // Reset count of lines of length 3
-                } else if (length === 5) {
-                    counts[line[0].owner].lineOf5++;
-                    counts[line[0].owner].lineOf4 = 0; // Reset count of lines of length 4
-                    counts[line[0].owner].lineOf3 = 0; // Reset count of lines of length 3
+                // Filter out undefined cells from the line array
+                line = line.filter(cell => cell !== undefined);
+
+                // Check if all cells in the line belong to the same player
+                if (line.length > 0 && line.every(cell => cell.owner === line[0].owner && cell.owner !== null)) {
+                    let length = line.length;
+                    if (length === 3) {
+                        counts[line[0].owner].lineOf3++;
+                    } else if (length === 4) {
+                        counts[line[0].owner].lineOf4++;
+                        counts[line[0].owner].lineOf3 = 0; // Reset count of lines of length 3
+                    } else if (length === 5) {
+                        counts[line[0].owner].lineOf5++;
+                        counts[line[0].owner].lineOf4 = 0; // Reset count of lines of length 4
+                        counts[line[0].owner].lineOf3 = 0; // Reset count of lines of length 3
+                    }
                 }
             }
 
-            // Check horizontal lines
+
+// Check horizontal lines
             for (let row = 0; row < grid.length; row++) {
                 for (let col = 0; col < grid[row].length - 2; col++) {
                     let line = [grid[row][col], grid[row][col + 1], grid[row][col + 2]];
                     if (isLineOfPlayer(line, grid[row][col].owner)) {
                         countLineLengths(line);
                     }
+                    // Check for lines of length 4
+                    if (col < grid[row].length - 3) {
+                        line.push(grid[row][col + 3]);
+                        if (isLineOfPlayer(line, grid[row][col].owner)) {
+                            countLineLengths(line);
+                        }
+                        // Check for lines of length 5
+                        if (col < grid[row].length - 4) {
+                            line.push(grid[row][col + 4]);
+                            if (isLineOfPlayer(line, grid[row][col].owner)) {
+                                countLineLengths(line);
+                            }
+                        }
+                    }
                 }
             }
 
-            // Check vertical lines
+// Check vertical lines
             for (let col = 0; col < grid[0].length; col++) {
                 for (let row = 0; row < grid.length - 2; row++) {
                     let line = [grid[row][col], grid[row + 1][col], grid[row + 2][col]];
                     if (isLineOfPlayer(line, grid[row][col].owner)) {
                         countLineLengths(line);
                     }
+                    // Check for lines of length 4
+                    if (row < grid.length - 3) {
+                        line.push(grid[row + 3][col]);
+                        if (isLineOfPlayer(line, grid[row][col].owner)) {
+                            countLineLengths(line);
+                        }
+                        // Check for lines of length 5
+                        if (row < grid.length - 4) {
+                            line.push(grid[row + 4][col]);
+                            if (isLineOfPlayer(line, grid[row][col].owner)) {
+                                countLineLengths(line);
+                            }
+                        }
+                    }
                 }
             }
 
-            // Check diagonal lines (top-left to bottom-right)
+// Check diagonal lines (top-left to bottom-right)
             for (let row = 0; row < grid.length - 2; row++) {
                 for (let col = 0; col < grid[row].length - 2; col++) {
                     let line = [grid[row][col], grid[row + 1][col + 1], grid[row + 2][col + 2]];
                     if (isLineOfPlayer(line, grid[row][col].owner)) {
                         countLineLengths(line);
                     }
+                    // Check for lines of length 4
+                    if (row < grid.length - 3 && col < grid[row].length - 3) {
+                        line.push(grid[row + 3][col + 3]);
+                        if (isLineOfPlayer(line, grid[row][col].owner)) {
+                            countLineLengths(line);
+                        }
+                        // Check for lines of length 5
+                        if (row < grid.length - 4 && col < grid[row].length - 4) {
+                            line.push(grid[row + 4][col + 4]);
+                            if (isLineOfPlayer(line, grid[row][col].owner)) {
+                                countLineLengths(line);
+                            }
+                        }
+                    }
                 }
             }
 
-            // Check diagonal lines (top-right to bottom-left)
+// Check diagonal lines (top-right to bottom-left)
             for (let row = 0; row < grid.length - 2; row++) {
                 for (let col = 2; col < grid[row].length; col++) {
                     let line = [grid[row][col], grid[row + 1][col - 1], grid[row + 2][col - 2]];
                     if (isLineOfPlayer(line, grid[row][col].owner)) {
                         countLineLengths(line);
                     }
+                    // Check for lines of length 4
+                    if (row < grid.length - 3 && col > 1) {
+                        line.push(grid[row + 3][col - 3]);
+                        if (isLineOfPlayer(line, grid[row][col].owner)) {
+                            countLineLengths(line);
+                        }
+                        // Check for lines of length 5
+                        if (row < grid.length - 4 && col > 2) {
+                            line.push(grid[row + 4][col - 4]);
+                            if (isLineOfPlayer(line, grid[row][col].owner)) {
+                                countLineLengths(line);
+                            }
+                        }
+                    }
                 }
             }
 
+
+
             // On reaffecte ensuite les valeurs de notre bareme (idealement, le foutre en constante pour ne l'avoir qu'a un seul endroit
             let res = {
-                player1: (counts["player:1"].lineOf3*10)+(counts["player:1"].lineOf4*20)+(counts["player:1"].lineOf5*1000),
-                player2: (counts["player:2"].lineOf3*10)+(counts["player:2"].lineOf4*20)+(counts["player:2"].lineOf5*1000),
+                player1: (counts["player:1"].lineOf3*10)+(counts["player:1"].lineOf4*50)+(counts["player:1"].lineOf5*1000),
+                player2: (counts["player:2"].lineOf3*10)+(counts["player:2"].lineOf4*50)+(counts["player:2"].lineOf5*1000),
             }
 
             return res;
@@ -367,7 +436,7 @@ const GameService = {
                 obj[key] = counts[key];
                 return obj;
             });
-        }
+        },
     },
 
     dices: {

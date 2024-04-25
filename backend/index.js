@@ -132,6 +132,15 @@ const applySelectedChoiceToGrid = (socket, data) => {
 
   games[gameIndex].gameState.grid = GameService.grid.resetcanBeCheckedCells(games[gameIndex].gameState.grid);
   games[gameIndex].gameState.grid = GameService.grid.selectCell(data.cellId, data.rowIndex, data.cellIndex, games[gameIndex].gameState.currentTurn, games[gameIndex].gameState.grid);
+  viewScoreStateBothPlayers(games[gameIndex])
+
+  // Sinon on finit le tour, on change la méthode de base pour ajouter la décrémentation des pions du game service par player
+  // on change la méthode de base pour ajouter la décrémentation des pions du game service par player
+  if(games[gameIndex].gameState.currentTurn === 'player:1') {
+    games[gameIndex].gameState.player1Puns--;
+  } else {
+    games[gameIndex].gameState.player2Puns--;
+  }
 
   const score = GameService.grid.calculateScore(games[gameIndex].gameState.grid);
 
@@ -141,9 +150,10 @@ const applySelectedChoiceToGrid = (socket, data) => {
   console.log(games[gameIndex].gameState.player1Score)
   console.log(games[gameIndex].gameState.player2Score)
   console.log("scores")
-  // TODO: Puis check si la partie s'arrête (lines / diagolales / no-more-gametokens)
-  // const isGameOver = GameService.grid.checkGameOver(games[gameIndex].gameState.grid);
-  /* if (isGameOver) {
+
+  // Un peu, bon très crade mais efficace
+  const isGameOver = score.player1 > 1000 || score.player2 > 1000 || games[gameIndex].gameState.player1Puns === 0 || games[gameIndex].gameState.player2Puns === 0
+  if (isGameOver) {
     // Game over logic here
     console.log("Game over!");
   } else {
@@ -151,10 +161,13 @@ const applySelectedChoiceToGrid = (socket, data) => {
     console.log("Continue the game...");
   }
 
-   */
-
   // Sinon on finit le tour
-  games[gameIndex].gameState.currentTurn = games[gameIndex].gameState.currentTurn === 'player:1' ? 'player:2' : 'player:1';
+  if(games[gameIndex].gameState.currentTurn === 'player:1') {
+    games[gameIndex].gameState.currentTurn = 'player:2'
+  } else {
+    games[gameIndex].gameState.currentTurn = 'player:1'
+  }
+
   games[gameIndex].gameState.timer = GameService.timer.getTurnDuration();
 
   // On remet le deck et les choix à zéro (la grille, elle, ne change pas)
@@ -166,7 +179,6 @@ const applySelectedChoiceToGrid = (socket, data) => {
   games[gameIndex].player2Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:2', games[gameIndex].gameState));
 
   // et on remet à jour la vue
-  viewScoreStateBothPlayers(games[gameIndex])
   updateClientViewChoices(games[gameIndex]);
   viewDeckStateBothPlayers(games[gameIndex]);
   viewGridStateBothPlayers(games[gameIndex]);
