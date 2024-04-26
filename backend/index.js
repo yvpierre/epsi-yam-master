@@ -154,17 +154,8 @@ const applySelectedChoiceToGrid = (socket, data) => {
   // Un peu, bon très crade mais efficace
   const isGameOver = score.player1 >= 1000 || score.player2 >= 1000 || games[gameIndex].gameState.player1Puns === 0 || games[gameIndex].gameState.player2Puns === 0
   if (isGameOver) {
-    if(score.player1 > 1000) {
-      console.log("PLAYER 1 WIN")
-    } else if (score.player2 > 1000) {
-      console.log("PLAYER 2 WIN")
-    } else if (games[gameIndex].gameState.player1Puns === 0) {
-      console.log("PLAYER 1 PLUS DE PIONS, LOOSER")
-    } else if (games[gameIndex].gameState.player2Puns === 0) {
-      console.log("PLAYER 2 PLUS DE PIONS, LOOSER")
-    }
-
-
+    games[gameIndex].player1Socket.emit('game.end', GameService.send.forPlayer.gameEndReview('player:1', games[gameIndex].gameState))
+    games[gameIndex].player2Socket.emit('game.end', GameService.send.forPlayer.gameEndReview('player:2', games[gameIndex].gameState))
     // Game over logic here
     console.log("Game over!");
   } else {

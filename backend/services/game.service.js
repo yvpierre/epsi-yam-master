@@ -1,6 +1,6 @@
 // websocket-server/services/game.service.js
 const TURN_DURATION = 45;
-const NB_PIONS = 12;
+const NB_PIONS = 1;
 
 const DECK_INIT = {
     dices: [
@@ -182,8 +182,12 @@ const GameService = {
                     playerScore: playerScore,
                     opponentScore: opponentScore
                 };
-            }
-
+            },
+            gameEndReview: (playerKey, gameState) => {
+              return {
+                  isOver: true,
+              }
+            },
         }
     },
     choices: {

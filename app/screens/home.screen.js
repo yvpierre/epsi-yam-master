@@ -16,7 +16,9 @@ export default function HomeScreen({ navigation }) {
             </View>
         </View>
     ); }
-const styles = StyleSheet.create({ container: {
+
+const styles = StyleSheet.create({
+    container: {
         flex: 1,
         backgroundColor: "#fff",
         alignItems: "center",

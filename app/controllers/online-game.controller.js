@@ -1,5 +1,5 @@
 // app/controller/online-game.controller.js
-import React, { useEffect, useState, useContext } from "react"; import {Button, StyleSheet, Text, View} from "react-native";
+import React, { useEffect, useState, useContext } from "react"; import {Button, Modal, StyleSheet, Text, View} from "react-native";
 import { SocketContext } from '../contexts/socket.context';
 import Board from "../components/board/board.component";
 export default function OnlineGameController() {
@@ -7,6 +7,9 @@ export default function OnlineGameController() {
     const [inQueue, setInQueue] = useState(false);
     const [inGame, setInGame] = useState(false);
     const [idOpponent, setIdOpponent] = useState(null);
+
+    const [isOver, setIsOver] = useState(false)
+
     useEffect(() => {
         console.log('[emit][queue.join]:', socket.id);
         socket.emit("queue.join");
@@ -23,6 +26,10 @@ export default function OnlineGameController() {
             setInGame(data['inGame']);
             setIdOpponent(data['idOpponent']);
         });
+        socket.on('game.end', (data) => {
+            console.log("fin de game")
+            setIsOver(data['isOver']);
+        })
     }, []);
     socket.on('queue.eject', (data) => {
         console.log('[listen][queue.leave]');
@@ -66,6 +73,21 @@ export default function OnlineGameController() {
                     <Board />
                 </>
             )}
+            <Modal
+                visible={isOver}
+                animationType="slide"
+            >
+                <View style={styles.modalContainer}>
+                    <Text style={styles.modalText}>
+                        {/* {playerWin ? playerMessage : opponentMessage} */}
+                        Victoire bien joué
+                    </Text>
+                    <Button
+                        title="Close"
+                        onPress={() => setIsOver(false)}
+                    />
+                </View>
+            </Modal>
         </View>
     ); }
 
