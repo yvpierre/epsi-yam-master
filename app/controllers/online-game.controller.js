@@ -2,8 +2,10 @@
 import React, { useEffect, useState, useContext } from "react"; import {Button, StyleSheet, Text, View} from "react-native";
 import { SocketContext } from '../contexts/socket.context';
 import Board from "../components/board/board.component";
-export default function OnlineGameController() { const socket = useContext(SocketContext);
-    const [inQueue, setInQueue] = useState(false); const [inGame, setInGame] = useState(false);
+export default function OnlineGameController() {
+    const socket = useContext(SocketContext);
+    const [inQueue, setInQueue] = useState(false);
+    const [inGame, setInGame] = useState(false);
     const [idOpponent, setIdOpponent] = useState(null);
     useEffect(() => {
         console.log('[emit][queue.join]:', socket.id);
@@ -20,12 +22,14 @@ export default function OnlineGameController() { const socket = useContext(Socke
             setInQueue(data['inQueue']);
             setInGame(data['inGame']);
             setIdOpponent(data['idOpponent']);
-        }); }, []);
-        socket.on('queue.eject', (data) => {
-            console.log('[listen][queue.leave]');
-            setInQueue(data['inQueue'])
-            setInGame(data['inGame'])
-        })
+        });
+    }, []);
+    socket.on('queue.eject', (data) => {
+        console.log('[listen][queue.leave]');
+        setInQueue(data['inQueue'])
+        setInGame(data['inGame'])
+    })
+
 
     const quitQueue = () => {
         socket.emit("queue.leave");

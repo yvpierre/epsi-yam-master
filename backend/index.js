@@ -3,8 +3,11 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 var uniqid = require('uniqid');
 const GameService = require('./services/game.service');
-// --------------------------------------------------- // -------- CONSTANTS AND GLOBAL VARIABLES ----------- // ---------------------------------------------------
+// ---------------------------------------------------
+// -------- CONSTANTS AND GLOBAL VARIABLES -----------
+// ---------------------------------------------------
 let games = [];
+let botGames = [];
 let queue = [];
 // ---------------------------------
 // -------- GAME METHODS -----------
@@ -147,8 +150,9 @@ const applySelectedChoiceToGrid = (socket, data) => {
   games[gameIndex].gameState.player1Score = score.player1
   games[gameIndex].gameState.player2Score = score.player2
 
+
   // Un peu, bon très crade mais efficace
-  const isGameOver = score.player1 > 1000 || score.player2 > 1000 || games[gameIndex].gameState.player1Puns === 0 || games[gameIndex].gameState.player2Puns === 0
+  const isGameOver = score.player1 >= 1000 || score.player2 >= 1000 || games[gameIndex].gameState.player1Puns === 0 || games[gameIndex].gameState.player2Puns === 0
   if (isGameOver) {
     if(score.player1 > 1000) {
       console.log("PLAYER 1 WIN")

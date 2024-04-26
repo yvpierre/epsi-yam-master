@@ -210,16 +210,26 @@ const GameService = {
             // on rajoute le OU || derrière pour vérifier que la suite à bien le premier ou le dernier index vide
             let hasStraight = (!counts.find((x) => x > 1)) && (counts[0] === 0 || counts[counts.length-1] === 0);
             // total
-            let sum = counts.reduce((acc, elem, index) => acc + (elem * index-1), 0);
+            let sum = 0
+            counts.map((elem, index) => {
+                sum+= elem*(index+1);
+                console.log("elem: "+elem)
+                console.log("index: "+index)
+            });
+            console.log(sum)
             // moins 2 huit
             let isLessThanEqual8 = sum <= 8;
+
 
             if (hasThreeOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "brelan"+threeOfAKindValue))
             if (hasFourOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "carre"));
             if (hasFiveOfAKind) availableCombinations.push(allCombinations.find(comb => comb.id === "yam"));
             if (hasFull) availableCombinations.push(allCombinations.find(comb => comb.id === "full"))
             if (hasStraight) availableCombinations.push(allCombinations.find(comb => comb.id === "suite"))
-            if (isLessThanEqual8) availableCombinations.push(allCombinations.find(comb => comb.id === 'moinshuit'))
+            if (isLessThanEqual8) availableCombinations.push(allCombinations.find(comb => comb.id === "moinshuit"))
+
+            if(isSec && availableCombinations.length >= 1) availableCombinations.push(allCombinations.find(comb => comb.id === "sec"))
+
 
             return availableCombinations;
         }
@@ -275,8 +285,8 @@ const GameService = {
             return rows
              */
             let counts = {
-                "player:1": { lineOf3: 0, lineOf4: 0, lineOf5: 0 },
-                "player:2": { lineOf3: 0, lineOf4: 0, lineOf5: 0 }
+                "player:1": { lineOf3: 0, lineOf4: 0, lineOf5: false },
+                "player:2": { lineOf3: 0, lineOf4: 0, lineOf5: false }
             };
 
             // Function to check if a given cell is within the bounds of the grid
@@ -302,10 +312,11 @@ const GameService = {
                     let chainOf4 = false;
                     let chainOf3 = false;
                     if (length === 5) {
-                        counts[line[0].owner].lineOf5++;
+                        counts[line[0].owner].lineOf5 = true;
                         counts[line[0].owner].lineOf4 -= 1; // Reset count of lines of length 4
                         counts[line[0].owner].lineOf3 -= 1; // Reset count of lines of length 3
                         chainOf5 = true
+
                     } else if (length === 4 && !chainOf5) {
                         counts[line[0].owner].lineOf4++;
                         counts[line[0].owner].lineOf3 = -1; // Reset count of lines of length 3
@@ -418,10 +429,11 @@ const GameService = {
             if(counts["player:1"].lineOf3 < 0) counts["player:1"].lineOf3 = 0
             if(counts["player:1"].lineOf4 < 0) counts["player:1"].lineOf3 = 0
 
+
             // On reaffecte ensuite les valeurs de notre bareme (idealement, le foutre en constante pour ne l'avoir qu'a un seul endroit
             let res = {
-                player1: (counts["player:1"].lineOf3*10)+(counts["player:1"].lineOf4*50)+(counts["player:1"].lineOf5*1000),
-                player2: (counts["player:2"].lineOf3*10)+(counts["player:2"].lineOf4*50)+(counts["player:2"].lineOf5*1000),
+                player1: counts["player:1"].lineOf5 ? 1000 : (counts["player:1"].lineOf3*10)+(counts["player:1"].lineOf4*50),
+                player2: counts["player:2"].lineOf5 ? 1000 : (counts["player:2"].lineOf3*10)+(counts["player:2"].lineOf4*50),
             }
 
             return res;
