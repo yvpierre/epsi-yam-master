@@ -2,13 +2,21 @@
 import React, { useEffect, useState, useContext } from "react"; import {Button, Modal, StyleSheet, Text, View} from "react-native";
 import { SocketContext } from '../contexts/socket.context';
 import Board from "../components/board/board.component";
+import useWindowSize from 'react-use/lib/useWindowSize'
+import Confetti from "react-confetti";
+
 export default function OnlineGameController() {
+    const { width, height } = useWindowSize()
+
     const socket = useContext(SocketContext);
     const [inQueue, setInQueue] = useState(false);
     const [inGame, setInGame] = useState(false);
     const [idOpponent, setIdOpponent] = useState(null);
 
     const [isOver, setIsOver] = useState(false)
+    const [playerMessage, setPlayerMessage] = useState("")
+    const [opponentMessage, setOpponentMessage] = useState("")
+    const [playerWin, setPlayerWin] = useState(false)
 
     useEffect(() => {
         console.log('[emit][queue.join]:', socket.id);
@@ -29,6 +37,8 @@ export default function OnlineGameController() {
         socket.on('game.end', (data) => {
             console.log("fin de game")
             setIsOver(data['isOver']);
+            setPlayerMessage(data['playerMessage'])
+            setPlayerWin(data['playerWin'])
         })
     }, []);
     socket.on('queue.eject', (data) => {
@@ -73,15 +83,26 @@ export default function OnlineGameController() {
                     <Board />
                 </>
             )}
+
+            {isOver && playerWin && (
+                <>
+                    <View>
+                        <Confetti
+                            width={width}
+                            height={height}
+                        />
+                    </View>
+                </>
+
+            )}
             <Modal
                 visible={isOver}
                 animationType="slide"
             >
                 <View style={styles.modalContainer}>
-                    <Text style={styles.modalText}>
-                        {/* {playerWin ? playerMessage : opponentMessage} */}
-                        Victoire bien joué
-                    </Text>
+                    <p>
+                        {playerMessage}
+                    </p>
                     <Button
                         title="Close"
                         onPress={() => setIsOver(false)}

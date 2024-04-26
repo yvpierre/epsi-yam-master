@@ -184,9 +184,32 @@ const GameService = {
                 };
             },
             gameEndReview: (playerKey, gameState) => {
-              return {
+                let playerMessage = ""
+                let opponentMessage  = ""
+                let playerWin = false
+
+                if(playerKey === 'player:1'){
+                    if(gameState.player1Score >=1000 || gameState.player2Puns === 0) {
+                        playerMessage = "Félicitations pour cette belle victoire"
+                        playerWin = true
+                    } else {
+                        playerMessage = "Pas dingue... défaite"
+                        playerWin = false
+                    }
+                } else {
+                    if(gameState.player2Score >=1000 || gameState.player1Puns === 0) {
+                        playerMessage = "Fantastique victoire"
+                        playerWin = true
+                    } else {
+                        playerMessage = "Défaite de merde"
+                        playerWin = false
+                    }
+                }
+                return {
                   isOver: true,
-              }
+                  playerMessage: playerMessage,
+                  playerWin: playerWin,
+                }
             },
         }
     },
