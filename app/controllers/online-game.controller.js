@@ -15,6 +15,7 @@ export default function OnlineGameController({ nav }) {
 
     const [isOver, setIsOver] = useState(false)
     const [playerMessage, setPlayerMessage] = useState("")
+    const [gameDetails, setGameDetails] = useState("")
     const [opponentMessage, setOpponentMessage] = useState("")
     const [playerWin, setPlayerWin] = useState(false)
 
@@ -39,6 +40,7 @@ export default function OnlineGameController({ nav }) {
             setIsOver(data['isOver']);
             setPlayerMessage(data['playerMessage'])
             setPlayerWin(data['playerWin'])
+            setGameDetails(data['gameDetails'])
         })
     }, []);
     socket.on('queue.eject', (data) => {
@@ -107,6 +109,7 @@ export default function OnlineGameController({ nav }) {
                 <View style={styles.modalContainer}>
                     <p>
                         {playerMessage}
+                        {gameDetails}
                     </p>
                     <Button
                         title="Rejouer"

@@ -186,29 +186,54 @@ const GameService = {
             gameEndReview: (playerKey, gameState) => {
                 let playerMessage = ""
                 let opponentMessage  = ""
+                let gameDetails = ""
                 let playerWin = false
 
                 if(playerKey === 'player:1'){
                     if(gameState.player1Score >=1000 || gameState.player2Puns === 0) {
                         playerMessage = "Félicitations pour cette belle victoire"
+                        if(gameState.player1Score >= 1000) {
+                            gameDetails = "Écrasante victoire de PLAYER 1 avec un score de "+gameState.player1Score+" à "+gameState.player2Score
+                        } else {
+                            gameDetails = "Victoire pour cause de manque de pions de PLAYER 2 ! on va pas cracher dans la soupe"
+                        }
                         playerWin = true
                     } else {
                         playerMessage = "Pas dingue... défaite"
+                        if(gameState.player2Score >= 1000) {
+                            gameDetails = "Victoire de PLAYER 2 avec un score de "+gameState.player2Score+" à "+gameState.player1Score
+                        } else if (gameState.player1Puns === 0) {
+                            gameDetails = "Manque de pions de PLAYER 1 ! on va pas cracher dans la soupe"
+                        }
                         playerWin = false
                     }
                 } else {
                     if(gameState.player2Score >=1000 || gameState.player1Puns === 0) {
                         playerMessage = "Fantastique victoire"
+                        if(gameState.player2Score >= 1000) {
+                            gameDetails = "Victoire de PLAYER 2 avec un score de "+gameState.player2Score+" à "+gameState.player1Score
+                        } else {
+                            gameDetails = "Manque de pions de PLAYER 1 ! on va pas cracher dans la soupe"
+                        }
                         playerWin = true
                     } else {
                         playerMessage = "Défaite de merde"
+                        if(gameState.player1Score >= 1000) {
+                            gameDetails = "Victoire de PLAYER 1 avec un score de "+gameState.player1Score+" à "+gameState.player2Score
+                        } else {
+                            gameDetails = "Manque de pions de PLAYER 2 ! on va pas cracher dans la soupe"
+                        }
                         playerWin = false
                     }
                 }
+
+                console.log("gameDetails"+gameDetails)
+
                 return {
                   isOver: true,
                   playerMessage: playerMessage,
                   playerWin: playerWin,
+                  gameDetails: gameDetails
                 }
             },
         }

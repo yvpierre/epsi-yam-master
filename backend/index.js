@@ -151,6 +151,8 @@ const applySelectedChoiceToGrid = (socket, data) => {
   games[gameIndex].gameState.player2Score = score.player2
 
 
+
+
   // Un peu, bon très crade mais efficace
   const isGameOver = score.player1 >= 1000 || score.player2 >= 1000 || games[gameIndex].gameState.player1Puns === 0 || games[gameIndex].gameState.player2Puns === 0
   if (isGameOver) {
