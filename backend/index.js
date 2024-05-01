@@ -159,6 +159,8 @@ const applySelectedChoiceToGrid = (socket, data) => {
     // Game over logic here
     console.log("Game over!");
   } else {
+    console.log(games[gameIndex].gameState.player1Puns)
+    console.log(games[gameIndex].gameState.player2Puns)
     // Continue the game logic here
     console.log("Continue the game...");
   }

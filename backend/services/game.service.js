@@ -240,10 +240,7 @@ const GameService = {
             let sum = 0
             counts.map((elem, index) => {
                 sum+= elem*(index+1);
-                console.log("elem: "+elem)
-                console.log("index: "+index)
             });
-            console.log(sum)
             // moins 2 huit
             let isLessThanEqual8 = sum <= 8;
 

@@ -5,7 +5,7 @@ import Board from "../components/board/board.component";
 import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from "react-confetti";
 
-export default function OnlineGameController() {
+export default function OnlineGameController({ nav }) {
     const { width, height } = useWindowSize()
 
     const socket = useContext(SocketContext);
@@ -48,15 +48,20 @@ export default function OnlineGameController() {
     })
 
 
+    const toMenu = () => {
+        nav({ name: 'HomeScreen' });
+        setIsOver(false);
+    }
     const quitQueue = () => {
         socket.emit("queue.leave");
-        navigation.navigate('HomeScreen')
+        toMenu()
     }
 
     const forfeit = () => {
-        socket.emit("queue.ff")
-        navigation.navigate('HomeScreen')
+        socket.emit("queue.ff");
+        nav({ name: 'HomeScreen' });
     }
+
 
     return (
         <View style={styles.container}>
@@ -104,8 +109,12 @@ export default function OnlineGameController() {
                         {playerMessage}
                     </p>
                     <Button
-                        title="Close"
+                        title="Rejouer"
                         onPress={() => setIsOver(false)}
+                    />
+                    <Button
+                        title="Retour au menu"
+                        onPress={() => toMenu()}
                     />
                 </View>
             </Modal>
