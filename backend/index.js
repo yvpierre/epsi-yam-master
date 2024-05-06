@@ -107,11 +107,19 @@ const rollDices = (socket) => {
 
   games[gameIndex].gameState.choices.availableChoices = filteredCombinations;
 
+  showChoices(games[gameIndex])
   // Update client views
   updateClientViewChoices(games[gameIndex]);
   viewDeckStateBothPlayers(games[gameIndex]);
   viewGridStateBothPlayers(games[gameIndex]);
   viewChoicesStateBothPlayers(games[gameIndex]);
+}
+
+const showChoices = (game) => {
+  // HIGHLIGHTING GRID CELLS
+  game.gameState.grid = GameService.grid.resetcanBeCheckedCells(game.gameState.grid)
+  console.log(game.gameState.choices)
+  game.gameState.grid = GameService.grid.updateGridAfterSelectingChoice(game.gameState.choices.availableChoices, game.gameState.grid)
 }
 
 const selectedChoice = (socket, data) => {
@@ -123,10 +131,7 @@ const selectedChoice = (socket, data) => {
 
   games[gameIndex].gameState.choices.idSelectedChoice = data.choiceId;
 
-  // HIGHLIGHTING GRID CELLS
-  games[gameIndex].gameState.grid = GameService.grid.resetcanBeCheckedCells(games[gameIndex].gameState.grid)
-  games[gameIndex].gameState.grid = GameService.grid.updateGridAfterSelectingChoice(games[gameIndex].gameState.choices.idSelectedChoice, games[gameIndex].gameState.grid)
-
+  showChoices(games[gameIndex])
   viewGridStateBothPlayers(games[gameIndex]);
 }
 

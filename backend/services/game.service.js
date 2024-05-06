@@ -1,6 +1,6 @@
 // websocket-server/services/game.service.js
 const TURN_DURATION = 45;
-const NB_PIONS = 1;
+const NB_PIONS = 3;
 
 const DECK_INIT = {
     dices: [
@@ -292,9 +292,9 @@ const GameService = {
             }));
         },
 
-        updateGridAfterSelectingChoice: (idSelectedChoice, grid) => {
+        updateGridAfterSelectingChoice: (choices, grid) => {
             return grid.map(row => row.map(cell => {
-                if (cell.id === idSelectedChoice && cell.owner === null) {
+                if (choices.some((elem) => elem.id === cell.id) && cell.owner === null) {
                     return {...cell, canBeChecked: true};
                 } else {
                     return cell;
