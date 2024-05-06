@@ -15,40 +15,52 @@ let queue = [];
 const updateClientViewTimers = (game) => {
   setTimeout(() => {
     game.player1Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:1', game.gameState));
-    game.player2Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:2', game.gameState));
+    game.player2Socket && (
+        game.player2Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:2', game.gameState))
+    )
   }, 200)
 }
 
 const updateClientViewChoices = (game) => {
   setTimeout( () => {
     game.player1Socket.emit("game.choices.view-state", GameService.send.forPlayer.choicesViewState('player:1', game.gameState))
-    game.player2Socket.emit("game.choices.view-state", GameService.send.forPlayer.choicesViewState('player:2', game.gameState))
+    game.player2Socket && (
+        game.player2Socket.emit("game.choices.view-state", GameService.send.forPlayer.choicesViewState('player:2', game.gameState))
+    )
   }, 200)
 }
 
 const viewDeckStateBothPlayers = (game) => {
   setTimeout( () => {
     game.player1Socket.emit('game.deck.view-state', GameService.send.forPlayer.deckViewState('player:1',game.gameState));
-    game.player2Socket.emit('game.deck.view-state', GameService.send.forPlayer.deckViewState('player:2',game.gameState));
+    game.player2Socket && (
+        game.player2Socket.emit('game.deck.view-state', GameService.send.forPlayer.deckViewState('player:2',game.gameState))
+    )
   }, 200)
 }
 
 const viewGridStateBothPlayers = (game) => {
   setTimeout(() => {
     game.player1Socket.emit('game.grid.view-state', GameService.send.forPlayer.gridViewState('player:1', game.gameState))
-    game.player2Socket.emit('game.grid.view-state', GameService.send.forPlayer.gridViewState('player:2', game.gameState))
+    game.player2Socket && (
+        game.player2Socket.emit('game.grid.view-state', GameService.send.forPlayer.gridViewState('player:2', game.gameState))
+    )
   }, 200)}
 
 const viewChoicesStateBothPlayers = (game) => {
   setTimeout(() => {
     game.player1Socket.emit('game.choices.view-state', GameService.send.forPlayer.choicesViewState('player:1', game.gameState))
-    game.player2Socket.emit('game.choices.view-state', GameService.send.forPlayer.choicesViewState('player:2', game.gameState))
+    game.player2Socket && (
+        game.player2Socket.emit('game.choices.view-state', GameService.send.forPlayer.choicesViewState('player:2', game.gameState))
+    )
   }, 200)}
 
 const viewScoreStateBothPlayers = (game) => {
   setTimeout(() => {
     game.player1Socket.emit('game.score.view-state', GameService.send.forPlayer.scoreViewState('player:1', game.gameState))
-    game.player2Socket.emit('game.score.view-state', GameService.send.forPlayer.scoreViewState('player:2', game.gameState))
+    game.player2Socket && (
+        game.player2Socket.emit('game.score.view-state', GameService.send.forPlayer.scoreViewState('player:2', game.gameState))
+    )
   }, 200)
 }
 
@@ -245,6 +257,58 @@ const createGame = (player1Socket, player2Socket) => {
 
 };
 
+const createGameVsBot = (player1Socket, difficulty) => {
+  const newGame = GameService.init.gameState();
+  newGame['idGame'] = uniqid();
+  newGame['player1Socket'] = player1Socket;
+  newGame['player2Socket'] = "BOT";
+  newGame['vsBot'] = true;
+
+  console.log(player1Socket)
+  console.log("diff")
+  console.log(difficulty)
+  botGames.push(newGame);
+
+  const gameIndex = GameService.utils.findGameIndexById(botGames, newGame.idGame);
+
+  const gameInterval = setInterval(() => {
+    botGames[gameIndex].gameState.timer--;
+
+    // Si le timer tombe à zéro
+    if (botGames[gameIndex].gameState.timer === 0) {
+      // On change de tour en inversant le clé dans 'currentTurn'
+      botGames[gameIndex].gameState.currentTurn = botGames[gameIndex].gameState.currentTurn === 'player:1' ? 'player:2' : 'player:1';
+      // Méthode du service qui renvoie la constante 'TURN_DURATION'
+      botGames[gameIndex].gameState.timer = GameService.timer.getTurnDuration();
+      botGames[gameIndex].gameState.deck = GameService.init.deck()
+      botGames[gameIndex].gameState.choices = GameService.init.choices();
+
+      viewDeckStateBothPlayers(botGames[gameIndex])
+      viewChoicesStateBothPlayers(botGames[gameIndex])
+    }
+
+    updateClientViewTimers(botGames[gameIndex])
+  }, 1000);
+
+  // START GAME
+  botGames[gameIndex].player1Socket.emit('game.start', GameService.send.forPlayer.viewGameState('player:1', botGames[gameIndex]))
+
+
+  viewDeckStateBothPlayers(games[gameIndex])
+  viewGridStateBothPlayers(games[gameIndex])
+  viewChoicesStateBothPlayers(games[gameIndex])
+
+  // On prévoit de couper l'horloge
+  // pour le moment uniquement quand le socket se déconnecte
+  player1Socket.on('disconnect', () => {
+    clearInterval(gameInterval);
+  });
+  player2Socket.on('disconnect', () => {
+    clearInterval(gameInterval);
+  });
+
+};
+
 const lockDices = (idDice, socketId) => {
   const gameIndex = GameService.utils.findGameIndexBySocketId(games, socketId)
   const diceIndex = GameService.utils.findDiceIndexByDiceId(games[gameIndex].gameState.deck.dices, idDice)
@@ -263,6 +327,9 @@ io.on('connection', socket => {
     console.log(`[${socket.id}] new player in queue `)
     newPlayerInQueue(socket);
   });
+  socket.on('game.vsbot.start', () => {
+    createGameVsBot(socket, "normal")
+  })
   socket.on('disconnect', reason => {
     console.log(`[${socket.id}] socket disconnected - ${reason}`);
   });

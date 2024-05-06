@@ -25,6 +25,7 @@ const GAME_INIT = {
         deck: {},
         player1Puns: NB_PIONS,
         player2Puns: NB_PIONS,
+        vsBot: false,
     }
 }
 
