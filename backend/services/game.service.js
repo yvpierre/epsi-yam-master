@@ -124,18 +124,20 @@ const GameService = {
     send: {
         forPlayer: {
             // Return conditionnaly gameState custom objet for player views
-            viewGameState: (playerKey, game) => { return {
-                inQueue: false,
-                inGame: true,
-                idPlayer:
-                    (playerKey === 'player:1')
-                        ? game.player1Socket.id
-                        : game.player2Socket.id,
-                idOpponent:
-                    (playerKey === 'player:1')
-                        ? game.player2Socket.id
-                        : game.player1Socket.id
-            }; },
+            viewGameState: (playerKey, game) => {
+                player = game.player1Socket.id
+                opp = "00000000"
+                game.player2Socket && (
+                    player = playerKey === 'player:1' ? game.player1Socket.id: game.player2Socket.id,
+                    opp = playerKey === 'player:1' ? game.player2Socket.id : game.player1Socket.id
+                )
+                return {
+                    inQueue: false,
+                    inGame: true,
+                    idPlayer: player,
+                    idOpponent: opp
+                };
+                },
             viewQueueState: () => {
                 return {
                     inQueue: true,
@@ -552,6 +554,7 @@ const GameService = {
                     return i; // Retourne l'index du jeu si le socket est trouvé
                 } }
             return -1; },
+
         findGameIndexBySocketId: (games, socketId) => {
             for (let i = 0; i < games.length; i++) {
                 if (games[i].player1Socket.id === socketId || games[i].player2Socket.id === socketId) {

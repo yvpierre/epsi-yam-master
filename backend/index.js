@@ -31,6 +31,7 @@ const updateClientViewChoices = (game) => {
 }
 
 const viewDeckStateBothPlayers = (game) => {
+  // console.log(game)
   setTimeout( () => {
     game.player1Socket.emit('game.deck.view-state', GameService.send.forPlayer.deckViewState('player:1',game.gameState));
     game.player2Socket && (
@@ -261,16 +262,12 @@ const createGameVsBot = (player1Socket, difficulty) => {
   const newGame = GameService.init.gameState();
   newGame['idGame'] = uniqid();
   newGame['player1Socket'] = player1Socket;
-  newGame['player2Socket'] = "BOT";
   newGame['vsBot'] = true;
 
-  console.log(player1Socket)
-  console.log("diff")
-  console.log(difficulty)
   botGames.push(newGame);
 
   const gameIndex = GameService.utils.findGameIndexById(botGames, newGame.idGame);
-
+  console.log(botGames)
   const gameInterval = setInterval(() => {
     botGames[gameIndex].gameState.timer--;
 
@@ -303,10 +300,6 @@ const createGameVsBot = (player1Socket, difficulty) => {
   player1Socket.on('disconnect', () => {
     clearInterval(gameInterval);
   });
-  player2Socket.on('disconnect', () => {
-    clearInterval(gameInterval);
-  });
-
 };
 
 const lockDices = (idDice, socketId) => {
