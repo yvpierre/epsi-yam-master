@@ -7,7 +7,6 @@ const GameService = require('./services/game.service');
 // -------- CONSTANTS AND GLOBAL VARIABLES -----------
 // ---------------------------------------------------
 let games = [];
-let botGames = [];
 let queue = [];
 // ---------------------------------
 // -------- GAME METHODS -----------
@@ -18,7 +17,7 @@ const updateClientViewTimers = (game) => {
     game.player2Socket && (
         game.player2Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:2', game.gameState))
     )
-  }, 200)
+  }, 100)
 }
 
 const updateClientViewChoices = (game) => {
@@ -27,17 +26,16 @@ const updateClientViewChoices = (game) => {
     game.player2Socket && (
         game.player2Socket.emit("game.choices.view-state", GameService.send.forPlayer.choicesViewState('player:2', game.gameState))
     )
-  }, 200)
+  }, 100)
 }
 
 const viewDeckStateBothPlayers = (game) => {
-  // console.log(game)
   setTimeout( () => {
     game.player1Socket.emit('game.deck.view-state', GameService.send.forPlayer.deckViewState('player:1',game.gameState));
     game.player2Socket && (
         game.player2Socket.emit('game.deck.view-state', GameService.send.forPlayer.deckViewState('player:2',game.gameState))
     )
-  }, 200)
+  }, 100)
 }
 
 const viewGridStateBothPlayers = (game) => {
@@ -46,7 +44,7 @@ const viewGridStateBothPlayers = (game) => {
     game.player2Socket && (
         game.player2Socket.emit('game.grid.view-state', GameService.send.forPlayer.gridViewState('player:2', game.gameState))
     )
-  }, 200)}
+  }, 100)}
 
 const viewChoicesStateBothPlayers = (game) => {
   setTimeout(() => {
@@ -54,7 +52,7 @@ const viewChoicesStateBothPlayers = (game) => {
     game.player2Socket && (
         game.player2Socket.emit('game.choices.view-state', GameService.send.forPlayer.choicesViewState('player:2', game.gameState))
     )
-  }, 200)}
+  }, 100)}
 
 const viewScoreStateBothPlayers = (game) => {
   setTimeout(() => {
@@ -62,7 +60,7 @@ const viewScoreStateBothPlayers = (game) => {
     game.player2Socket && (
         game.player2Socket.emit('game.score.view-state', GameService.send.forPlayer.scoreViewState('player:2', game.gameState))
     )
-  }, 200)
+  }, 100)
 }
 
 const newPlayerInQueue = (socket) => {
@@ -84,26 +82,41 @@ const ff = (socket) => {
   games.slice(games.indexOf((elem) => elem.id === socket.id))
 }
 
-const rollDices = (socket) => {
-  // combinations management
-  const gameIndex = GameService.utils.findGameIndexBySocketId(games, socket.id);
+const botTurn = (game) => {
+  console.log(game.gameState.deck.rollsCounter)
 
-  games[gameIndex].gameState.deck.dices = GameService.dices.roll(games[gameIndex].gameState.deck.dices);
-  games[gameIndex].gameState.deck.rollsCounter++;
+  console.log("bot turn, gonna roll some")
+  rollDices(null, game)
+  if(game.gameState.choices.availableChoices !== []) {
+    selectedChoice(null, game.gameState.choices.availableChoices[0], game)
+    console.log(game.gameState.choices.idSelectedChoice)
+  }
+}
 
-  if(games[gameIndex].gameState.deck.rollsCounter > games[gameIndex].gameState.deck.rollsMaximum) {
-    games[gameIndex].gameState.deck.dices = GameService.dices.lockEveryDice(games[gameIndex].gameState.deck.dices);
-    games[gameIndex].gameState.timer = 5;
+const rollDices = (socket, gameParam) => {
+  let game;
+  if(!gameParam){
+    game = games[GameService.utils.findGameIndexBySocketId(games, socket.id)];
+  } else {
+    game = gameParam
   }
 
-  const dices = games[gameIndex].gameState.deck.dices;
+  game.gameState.deck.dices = GameService.dices.roll(game.gameState.deck.dices);
+  game.gameState.deck.rollsCounter++;
+
+  if(game.gameState.deck.rollsCounter > game.gameState.deck.rollsMaximum) {
+    game.gameState.deck.dices = GameService.dices.lockEveryDice(game.gameState.deck.dices);
+    game.gameState.timer = 5;
+  }
+
+  const dices = game.gameState.deck.dices;
   const isDefi = false;
-  const isSec = games[gameIndex].gameState.deck.rollsCounter === 2;
+  const isSec = game.gameState.deck.rollsCounter === 2;
 
   const combinations = GameService.choices.findCombinations(dices, isDefi, isSec);
 
   // Get unavailable choices from the grid
-  const unavailable = GameService.grid.getUnavailableChoices(games[gameIndex].gameState.grid);
+  const unavailable = GameService.grid.getUnavailableChoices(game.gameState.grid);
 
   // Filter out combinations where all cells for that value are already taken
   let filteredCombinations = combinations.filter(combi => {
@@ -118,14 +131,14 @@ const rollDices = (socket) => {
     });
   });
 
-  games[gameIndex].gameState.choices.availableChoices = filteredCombinations;
+  game.gameState.choices.availableChoices = filteredCombinations;
 
-  showChoices(games[gameIndex])
+  showChoices(game)
   // Update client views
-  updateClientViewChoices(games[gameIndex]);
-  viewDeckStateBothPlayers(games[gameIndex]);
-  viewGridStateBothPlayers(games[gameIndex]);
-  viewChoicesStateBothPlayers(games[gameIndex]);
+  updateClientViewChoices(game);
+  viewDeckStateBothPlayers(game);
+  viewGridStateBothPlayers(game);
+  viewChoicesStateBothPlayers(game);
 }
 
 const showChoices = (game) => {
@@ -135,17 +148,21 @@ const showChoices = (game) => {
   game.gameState.grid = GameService.grid.updateGridAfterSelectingChoice(game.gameState.choices.availableChoices, game.gameState.grid)
 }
 
-const selectedChoice = (socket, data) => {
-  const gameIndex = GameService.utils.findGameIndexBySocketId(games, socket.id);
-
+const selectedChoice = (socket, data, gameParam) => {
+  let game;
+  if(!gameParam){
+    game = games[GameService.utils.findGameIndexBySocketId(games, socket.id)];
+  } else {
+    game = gameParam
+  }
   // LOCKING DICES WHEN COMBI SELECTIONNEE
-  games[gameIndex].gameState.deck.dices = GameService.dices.lockEveryDice(games[gameIndex].gameState.deck.dices)
-  games[gameIndex].gameState.timer = 10;
+  game.gameState.deck.dices = GameService.dices.lockEveryDice(game.gameState.deck.dices)
+  game.gameState.timer = 10;
 
-  games[gameIndex].gameState.choices.idSelectedChoice = data.choiceId;
+  game.gameState.choices.idSelectedChoice = data.choiceId;
 
-  showChoices(games[gameIndex])
-  viewGridStateBothPlayers(games[gameIndex]);
+  showChoices(game)
+  viewGridStateBothPlayers(game);
 }
 
 const applySelectedChoiceToGrid = (socket, data) => {
@@ -168,14 +185,13 @@ const applySelectedChoiceToGrid = (socket, data) => {
   games[gameIndex].gameState.player1Score = score.player1
   games[gameIndex].gameState.player2Score = score.player2
 
-
-
-
   // Un peu, bon très crade mais efficace
   const isGameOver = score.player1 >= 1000 || score.player2 >= 1000 || games[gameIndex].gameState.player1Puns === 0 || games[gameIndex].gameState.player2Puns === 0
   if (isGameOver) {
     games[gameIndex].player1Socket.emit('game.end', GameService.send.forPlayer.gameEndReview('player:1', games[gameIndex].gameState))
-    games[gameIndex].player2Socket.emit('game.end', GameService.send.forPlayer.gameEndReview('player:2', games[gameIndex].gameState))
+    if(!games[gameIndex].vsBot){
+      games[gameIndex].player2Socket.emit('game.end', GameService.send.forPlayer.gameEndReview('player:2', games[gameIndex].gameState))
+    }
     // Game over logic here
     console.log("Game over!");
   } else {
@@ -192,6 +208,7 @@ const applySelectedChoiceToGrid = (socket, data) => {
     games[gameIndex].gameState.currentTurn = 'player:1'
   }
 
+
   games[gameIndex].gameState.timer = GameService.timer.getTurnDuration();
 
   // On remet le deck et les choix à zéro (la grille, elle, ne change pas)
@@ -200,8 +217,16 @@ const applySelectedChoiceToGrid = (socket, data) => {
 
   // On reset le timer
   games[gameIndex].player1Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:1', games[gameIndex].gameState));
-  games[gameIndex].player2Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:2', games[gameIndex].gameState));
+  (games[gameIndex].vsBot !== true) && (
+      games[gameIndex].player2Socket.emit('game.timer', GameService.send.forPlayer.gameTimer('player:2', games[gameIndex].gameState))
+  )
 
+
+  // TODO: On implémente le tour du bot ici directement comme un crasseux
+  if(games[gameIndex].vsBot) {
+    console.log("dans le if vsbot")
+    botTurn(games[gameIndex])
+  }
   // et on remet à jour la vue
   updateClientViewChoices(games[gameIndex]);
   viewDeckStateBothPlayers(games[gameIndex]);
@@ -264,31 +289,30 @@ const createGameVsBot = (player1Socket, difficulty) => {
   newGame['player1Socket'] = player1Socket;
   newGame['vsBot'] = true;
 
-  botGames.push(newGame);
+  games.push(newGame);
 
-  const gameIndex = GameService.utils.findGameIndexById(botGames, newGame.idGame);
-  console.log(botGames)
+  const gameIndex = GameService.utils.findGameIndexById(games, newGame.idGame);
   const gameInterval = setInterval(() => {
-    botGames[gameIndex].gameState.timer--;
+    games[gameIndex].gameState.timer--;
 
     // Si le timer tombe à zéro
-    if (botGames[gameIndex].gameState.timer === 0) {
+    if (games[gameIndex].gameState.timer === 0) {
       // On change de tour en inversant le clé dans 'currentTurn'
-      botGames[gameIndex].gameState.currentTurn = botGames[gameIndex].gameState.currentTurn === 'player:1' ? 'player:2' : 'player:1';
+      games[gameIndex].gameState.currentTurn = games[gameIndex].gameState.currentTurn === 'player:1' ? 'player:2' : 'player:1';
       // Méthode du service qui renvoie la constante 'TURN_DURATION'
-      botGames[gameIndex].gameState.timer = GameService.timer.getTurnDuration();
-      botGames[gameIndex].gameState.deck = GameService.init.deck()
-      botGames[gameIndex].gameState.choices = GameService.init.choices();
+      games[gameIndex].gameState.timer = GameService.timer.getTurnDuration();
+      games[gameIndex].gameState.deck = GameService.init.deck()
+      games[gameIndex].gameState.choices = GameService.init.choices();
 
-      viewDeckStateBothPlayers(botGames[gameIndex])
-      viewChoicesStateBothPlayers(botGames[gameIndex])
+      viewDeckStateBothPlayers(games[gameIndex])
+      viewChoicesStateBothPlayers(games[gameIndex])
     }
 
-    updateClientViewTimers(botGames[gameIndex])
+    updateClientViewTimers(games[gameIndex])
   }, 1000);
 
   // START GAME
-  botGames[gameIndex].player1Socket.emit('game.start', GameService.send.forPlayer.viewGameState('player:1', botGames[gameIndex]))
+  games[gameIndex].player1Socket.emit('game.start', GameService.send.forPlayer.viewGameState('player:1', games[gameIndex]))
 
 
   viewDeckStateBothPlayers(games[gameIndex])
@@ -306,7 +330,6 @@ const lockDices = (idDice, socketId) => {
   const gameIndex = GameService.utils.findGameIndexBySocketId(games, socketId)
   const diceIndex = GameService.utils.findDiceIndexByDiceId(games[gameIndex].gameState.deck.dices, idDice)
 
-  console.log(games[gameIndex].gameState.deck.dices[diceIndex].locked)
   games[gameIndex].gameState.deck.dices[diceIndex].locked = !games[gameIndex].gameState.deck.dices[diceIndex].locked
   viewDeckStateBothPlayers(games[gameIndex])
 }
