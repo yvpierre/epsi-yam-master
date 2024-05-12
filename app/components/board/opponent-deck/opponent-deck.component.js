@@ -30,17 +30,17 @@ const OpponentDeck = () => {
             )}
         </View>
     ); };
-const styles = StyleSheet.create({ deckOpponentContainer: {
+const styles = StyleSheet.create({ deckOpponentContainer: 
+    {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
         borderBottomWidth: 1,
-        borderColor: "black"
+        border: "solid 1px green",
     },
     diceContainer: {
         flexDirection: "row",
-        width: "70%",
-        justifyContent: "space-between",
-        marginBottom: 10,
+        width: "100%",
+        border: "solid 1px blue",
     }, });
 export default OpponentDeck;

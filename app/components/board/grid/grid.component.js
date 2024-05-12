@@ -1,11 +1,8 @@
-// app/components/board/grid/grid.component.js
-
 import React, { useEffect, useContext, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { SocketContext } from "../../../contexts/socket.context";
 
 const Grid = () => {
-
     const socket = useContext(SocketContext);
 
     const [displayGrid, setDisplayGrid] = useState(true);
@@ -21,10 +18,16 @@ const Grid = () => {
     useEffect(() => {
         socket.on("game.grid.view-state", (data) => {
             setDisplayGrid(data['displayGrid']);
-            setCanSelectCells(data['canSelectCells'])
+            setCanSelectCells(data['canSelectCells']);
             setGrid(data['grid']);
         });
     }, []);
+
+    // Function to determine cell background color
+    const getCellBackgroundColor = (rowIndex, cellIndex) => {
+        // Alternate colors based on row and column index
+        return (rowIndex + cellIndex) % 2 === 0 ? "#FFFFFF" : "#CCCCCC"; // You can change these colors as per your preference
+    };
 
     return (
         <View style={styles.gridContainer}>
@@ -36,9 +39,10 @@ const Grid = () => {
                                 key={cell.id}
                                 style={[
                                     styles.cell,
+                                    { backgroundColor: getCellBackgroundColor(rowIndex, cellIndex) },
                                     cell.owner === "player:1" && styles.playerOwnedCell,
                                     cell.owner === "player:2" && styles.opponentOwnedCell,
-                                    (cell.canBeChecked && !(cell.owner === "player:1") && !(cell.owner === "player:2")) && styles.canBeCheckedCell,
+                                    cell.canBeChecked && !(cell.owner === "player:1") && !(cell.owner === "player:2") && styles.canBeCheckedCell,
                                     rowIndex !== 0 && styles.topBorder,
                                     cellIndex !== 0 && styles.leftBorder,
                                 ]}
@@ -75,8 +79,8 @@ const styles = StyleSheet.create({
         height: "100%",
         justifyContent: "center",
         alignItems: "center",
-        borderWidth: 1,
-        borderColor: "black",
+        borderWidth: 2,
+        borderColor: "#541765",
     },
     cellText: {
         fontSize: 11,
@@ -101,4 +105,3 @@ const styles = StyleSheet.create({
 });
 
 export default Grid;
-    
