@@ -40,22 +40,16 @@ const PlayerScore = () => {
 const Board = ({ gameViewState}) => {
     return (
         <View style={styles.container}>
-            <View style={[styles.row, { height: '5%' }]}>
+            <View style={[styles.row, { height: '20%' }]}>
                 <OpponentInfos />
                 <View style={styles.opponentTimerScoreContainer}>
                     <OpponentTimerComponent />
                     <OpponentScore />
+                    <OpponentDeck />
                 </View>
             </View>
-            <View style={[styles.row, { height: '25%' }]}>
-                <OpponentDeck />
-            </View>
-            <View style={[styles.row, { height: '40%' }]}>
+            <View style={[styles.row, { height: '60%' }]}>
                 <GridComponent />
-                <ChoicesComponent />
-            </View>
-            <View style={[styles.row, { height: '25%' }]}>
-                <PlayerDeck />
             </View>
 
             <View style={[styles.row, { height: '5%' }]}>
@@ -63,6 +57,9 @@ const Board = ({ gameViewState}) => {
                 <View style={styles.playerTimerScoreContainer}>
                     <PlayerTimerComponent />
                     <PlayerScore />
+                </View>
+                <View style={[styles.row, { height: '15%' }]}>
+                    <PlayerDeck />
                 </View>
             </View>
         </View>
@@ -75,13 +72,17 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: '100%',
+        width: '250px',
         height: '100%',
-    }, row: {
+        border: '1px solid red',
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+    row: {
         flexDirection: 'row',
         width: '100%',
         borderBottomWidth: 1,
-        borderColor: 'black',
+        borderColor: 'white',
     },
     opponentInfosContainer: {
         flex: 7,
@@ -89,38 +90,42 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRightWidth: 1,
         borderColor: 'black',
-        backgroundColor: "lightgrey"
+        backgroundColor: "lightgrey",
+        border: '1px solid red',
     },
     opponentTimerScoreContainer: {
         flex: 3,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: "lightgrey"
+        backgroundColor: "lightgrey",
+        border: '1px solid red',
     },
     opponentTimerContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        border: '1px solid red',
     },
     opponentScoreContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        border: '1px solid red',
     },
     deckOpponentContainer: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
         borderBottomWidth: 1,
-        borderColor: "black"
+        borderColor: "white",
     },
     gridContainer: {
         flex: 7,
         justifyContent: 'center',
         alignItems: 'center',
         borderRightWidth: 1,
-        borderColor: 'black',
+        borderColor: 'red',
     },
     choicesContainer: {
         flex: 3,
@@ -132,34 +137,38 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomWidth: 1,
-            borderColor: 'black',
-        },
-        playerInfosContainer: {
-            flex: 7,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRightWidth: 1,
-                borderColor: 'black',
-                backgroundColor: "lightgrey"
-        },
-        playerTimerScoreContainer: {
-            flex: 3,
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: "lightgrey"
-        },
-        playerTimerContainer: {
-            flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: "lightgrey"
-        },
-        playerScoreContainer: {
-            flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: "lightgrey"
-        },
+        borderColor: 'red',
+    },
+    playerInfosContainer: {
+        flex: 7,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRightWidth: 1,
+        borderColor: 'black',
+        backgroundColor: "lightgrey",
+        border: '1px solid red',
+    },
+    playerTimerScoreContainer: {
+        flex: 3,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "lightgrey",
+        border: '1px solid red',
+    },
+    playerTimerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "lightgrey",
+        border: '1px solid red',
+    },
+    playerScoreContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "lightgrey",
+        border: '1px solid red',
+    },
 });
 export default Board;
