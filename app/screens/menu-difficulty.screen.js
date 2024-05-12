@@ -6,33 +6,39 @@ export default function MenuDifficultyScreen({ navigation }) {
     return (
         <LinearGradient colors={['#541765', '#0A002E', '#541765']} style={styles.container}>
             <View style={styles.content}>
-                <CustomButton
-                    title="TRANQUILLE"
-                    onPress={() => navigation.navigate("VsBotGameScreen")}
-                    textColor="#FEF49A"
-                    gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
-                />
+                <div style={styles.btnwip}>
+                    <CustomButton
+                        title="TRANQUILLE"
+                        onPress={() => navigation.navigate("VsBotGameScreen")}
+                        textColor="#FEF49A"
+                        gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
+                    />
+                </div>
                 <CustomButton
                     title="NORMAL"
                     onPress={() => navigation.navigate("VsBotGameScreen")}
                     textColor="#FEF49A"
-                    gradientColors={['#C9083F', '#FF5BB3','#C9083F']}
-                />
-                <CustomButton
-                    title="EXPRESS"
-                    onPress={() => navigation.navigate("VsBotGameScreen")}
-                    textColor="#FEF49A"
                     gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
                 />
-                <CustomButton
-                    title="CHAOS"
-                    onPress={() => navigation.navigate("VsBotGameScreen")}
-                    textColor="#FEF49A"
-                    gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
-                />
+                <div style={styles.btnwip}>
+                    <CustomButton
+                        title="EXPRESS"
+                        onPress={() => navigation.navigate("VsBotGameScreen")}
+                        textColor="#FEF49A"
+                        gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
+                    />
+                </div>
+                <div style={styles.btnwip}>
+                    <CustomButton
+                        title="CHAOS"
+                        onPress={() => navigation.navigate("VsBotGameScreen")}
+                        textColor="#FEF49A"
+                        gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
+                    />
+                </div>
             </View>
         </LinearGradient>
-    );
+);
 }
 
 const CustomButton = ({ title, onPress, textColor, gradientColors }) => (
@@ -80,6 +86,8 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 20,
         fontFamily: "MarkoOne-Regular", // Use the declared font family here
-
     },
+    btnwip: {
+        opacity: 0.5,
+    }
 });

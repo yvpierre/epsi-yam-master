@@ -1,6 +1,12 @@
 # EPSI - YAMS MASTER
+### Équipe 
+- Pierre Yvenou
+- Alexis Bertin
+### Debrief de l'avancement au 12/05/2024, 23h50 : 
+- Le jeu fonctionne dans l'ensemble jusqu'au mode versus bot où il est possible de lancer une partie, de jouer, mais le bot ne répond malheuresement pas car la logique n'a pas pu être implémentée.
+- Le frontend comprend des fonctionnalités qui n'ont pas pu être développés mais qui sont tout de même présentes dans les menus histoire de donner une idée de ce à quoi pourrait ressembler le jeu avec plus de développements
+- Ci-dessous on peut retrouver une liste des différentes pages avec des explications sur les différents modes par exemple.
 
-## TODO des choses à faire
 Menu principal:
 - Jouer
 - Replays
@@ -38,6 +44,3 @@ Implémenter :
 - setTimeout pour que le bot prenne un peu de temps à jouer
 - Pourcentage de chances d'avoir la combinaison de dés
 
-Notes/Questions:
-- Lock tous les dés d’un coup, pas à chaque fois qu’un dé change
-- Comment implémenter Docker dans le projet ? 

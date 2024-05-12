@@ -5,16 +5,21 @@ import Dice from "../decks/dice.component";
 
 const PlayerDeck = () => {
     const socket = useContext(SocketContext);
-    const [displayPlayerDeck, setDisplayPlayerDeck] = useState(false); const [dices, setDices] = useState(Array(5).fill(false));
-    const [displayRollButton, setDisplayRollButton] = useState(false); const [rollsCounter, setRollsCounter] = useState(0);
+    const [displayPlayerDeck, setDisplayPlayerDeck] = useState(false);
+    const [dices, setDices] = useState(Array(5).fill(false));
+    const [displayRollButton, setDisplayRollButton] = useState(false);
+    const [rollsCounter, setRollsCounter] = useState(0);
     const [rollsMaximum, setRollsMaximum] = useState(3);
+
     useEffect(() => {
-        socket.on("game.deck.view-state", (data) => { setDisplayPlayerDeck(data['displayPlayerDeck']); if (data['displayPlayerDeck']) {
-            setDisplayRollButton(data['displayRollButton']);
-            setRollsCounter(data['rollsCounter']);
-            setRollsMaximum(data['rollsMaximum']);
-            setDices(data['dices']);
-        } });
+        socket.on("game.deck.view-state", (data) => {
+            setDisplayPlayerDeck(data['displayPlayerDeck']);
+            if (data['displayPlayerDeck']) {
+                setDisplayRollButton(data['displayRollButton']);
+                setRollsCounter(data['rollsCounter']);
+                setRollsMaximum(data['rollsMaximum']);
+                setDices(data['dices']);
+            } });
     }, []);
     const toggleDiceLock = (index) => {
         const newDices = [...dices];

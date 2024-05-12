@@ -16,17 +16,19 @@ export default function MenuGameScreen({ navigation }) {
                     title="MULTI"
                     onPress={() => navigation.navigate("OnlineGameScreen")}
                     textColor="#FEF49A"
-                    gradientColors={['#C9083F', '#FF5BB3','#C9083F']}
-                />
-                <CustomButton
-                    title="REPLAY"
-                    onPress={() => navigation.navigate("ReplayScreen")}
-                    textColor="#FEF49A"
                     gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
                 />
+                <div style={styles.btnwip}>
+                    <CustomButton
+                        title="REPLAY"
+                        onPress={() => navigation.navigate("ReplayScreen")}
+                        textColor="#FEF49A"
+                        gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
+                    />
+                </div>
             </View>
         </LinearGradient>
-    );
+);
 }
 
 const CustomButton = ({ title, onPress, textColor, gradientColors }) => (
@@ -74,6 +76,8 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 20,
         fontFamily: "MarkoOne-Regular", // Use the declared font family here
-
     },
+    btnwip: {
+        opacity: 0.5,
+    }
 });

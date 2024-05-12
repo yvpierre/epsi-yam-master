@@ -18,29 +18,32 @@ export default function HomeScreen({ navigation }) {
             />
             <Text style={styles.titleText}> 
                 DELUXE EDITION
-            </Text> 
+            </Text>
             <View style={styles.content}>
                 <CustomButton
                     title="JOUER"
                     onPress={() => navigation.navigate("MenuGameScreen")}
                     textColor="#FEF49A"
-                    gradientColors={['#C9083F', '#FF5BB3','#C9083F']}
-                />
-                <CustomButton
-                    title="OPTIONS"
-                    onPress={() => navigation.navigate("VsBotGameScreen")}
-                    textColor="#FEF49A"
                     gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
                 />
-                <CustomButton
-                    title="AIDE"
-                    onPress={() => navigation.navigate("VsBotGameScreen")}
-                    textColor="#FEF49A"
-                    gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
-                />
+                <div style={styles.btnwip}>
+                    <CustomButton
+                        title="OPTIONS"
+                        textColor="#FEF49A"
+                        gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
+                    />
+                </div>
+                <div style={styles.btnwip}>
+                    <CustomButton
+                        title="AIDE"
+                        textColor="#FEF49A"
+                        class="btnwip"
+                        gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
+                    />
+                </div>
             </View>
         </LinearGradient>
-    );
+);
 }
 
 const CustomButton = ({ title, onPress, textColor, gradientColors }) => (
@@ -56,8 +59,8 @@ const CustomButton = ({ title, onPress, textColor, gradientColors }) => (
     </TouchableOpacity>
 );
 
-const styles = StyleSheet.create({
-    
+const styles = StyleSheet.create(
+    {
     container: {
         flex: 1,
         justifyContent: "center",
@@ -104,4 +107,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         fontFamily: "MarkoOne-Regular", // Use the declared font family here
     },
+    btnwip: {
+        opacity: 0.5,
+    }
 });
