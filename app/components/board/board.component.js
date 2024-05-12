@@ -11,7 +11,7 @@ import ChoicesComponent from "./choices/choices.component";
 const OpponentInfos = () => {
     return (
     <View style={styles.opponentInfosContainer}>
-        <Text>Opponent infos</Text>
+        <Text>Pierre</Text>
     </View>
 );
 };
@@ -88,13 +88,10 @@ const styles = StyleSheet.create({
         flex: 7,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRightWidth: 1,
-        borderColor: 'black',
-        backgroundColor: "lightgrey",
-        border: '1px solid red',
+        border: '1px solid orange',
     },
     opponentTimerScoreContainer: {
-        flex: 3,
+        flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
