@@ -1,14 +1,17 @@
 // app/controller/online-game.controller.js
-import React, { useEffect, useState, useContext } from "react"; import {Button, Modal, StyleSheet, Text, View} from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import {Button, Modal, StyleSheet, Text, View} from "react-native";
 import { SocketContext } from '../contexts/socket.context';
 import Board from "../components/board/board.component";
 import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from "react-confetti";
 
-export default function OnlineGameController({ nav }) {
+import { LinearGradient } from 'expo-linear-gradient';
+
+export default function OnlineGameController() {
+    const socket = useContext(SocketContext);
     const { width, height } = useWindowSize()
 
-    const socket = useContext(SocketContext);
     const [inQueue, setInQueue] = useState(false);
     const [inGame, setInGame] = useState(false);
     const [idOpponent, setIdOpponent] = useState(null);
@@ -65,67 +68,68 @@ export default function OnlineGameController({ nav }) {
 
 
     return (
-        <View style={styles.container}>
-            {!inQueue && !inGame && (
-                <>
-                    <Text style={styles.paragraph}>
-                        Waiting for server datas...
-                    </Text>
-                </>
-            )}
-            {inQueue && (
-                <>
-                    <Text style={styles.paragraph}>
-                        Waiting for another player...
-                    </Text>
-                    <Button
-                        title="Quitter la file"
-                        onPress={() => quitQueue()}
-                    />
-                </>
-            )}
-            {inGame && (
-                <>
-                    <Board />
-                </>
-            )}
+        <LinearGradient colors={['#541765', '#0A002E', '#541765']} style={styles.container}>
 
-            {isOver && playerWin && (
-                <>
-                    <View>
-                        <Confetti
-                            width={width}
-                            height={height}
+            <View style={styles.container}>
+                {!inQueue && !inGame && (
+                    <>
+                        <Text style={styles.paragraph}>
+                            En attente d'une connection...
+                        </Text>
+                    </>
+                )}
+                {inQueue && (
+                    <>
+                        <Text style={styles.paragraph}>
+                            En attente d'un adversaire...
+                        </Text>
+                        <Button
+                            title="Quitter la file"
+                            onPress={() => quitQueue()}
+                        />
+                    </>
+                )}
+                {inGame && (
+                    <>
+                        <Board />
+                    </>
+                )}
+                {isOver && playerWin && (
+                    <>
+                        <View>
+                            <Confetti
+                                width={width}
+                                height={height}
+                            />
+                        </View>
+                    </>
+
+                )}
+                <Modal
+                    visible={isOver}
+                    animationType="slide"
+                >
+                    <View style={styles.modalContainer}>
+                        <p>
+                            {playerMessage}
+                            {gameDetails}
+                        </p>
+                        <Button
+                            title="Rejouer"
+                            onPress={() => setIsOver(false)}
+                        />
+                        <Button
+                            title="Retour au menu"
+                            onPress={() => toMenu()}
                         />
                     </View>
-                </>
-
-            )}
-            <Modal
-                visible={isOver}
-                animationType="slide"
-            >
-                <View style={styles.modalContainer}>
-                    <p>
-                        {playerMessage}
-                        {gameDetails}
-                    </p>
-                    <Button
-                        title="Rejouer"
-                        onPress={() => setIsOver(false)}
-                    />
-                    <Button
-                        title="Retour au menu"
-                        onPress={() => toMenu()}
-                    />
-                </View>
-            </Modal>
-        </View>
+                </Modal>
+            </View>
+        </LinearGradient>
     ); }
 
 const styles = StyleSheet.create({ container: {
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
         width: '100%',
@@ -133,5 +137,7 @@ const styles = StyleSheet.create({ container: {
     },
     paragraph: {
         fontSize: 16,
+        color: "#FEF49A",
+        fontFamily: 'MarkoOne-Regular',
     }
 });
