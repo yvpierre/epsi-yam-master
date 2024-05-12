@@ -2,16 +2,13 @@
 import React, { useEffect, useState, useContext } from "react"; import {Button, Modal, StyleSheet, Text, View} from "react-native";
 import { SocketContext } from '../contexts/socket.context';
 import Board from "../components/board/board.component";
-
 import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from "react-confetti";
-import { LinearGradient } from 'expo-linear-gradient';
-                                                
-export default function OnlineGameController({ nav }) {
+
+export default function VsbotGameController({ nav }) {
     const { width, height } = useWindowSize()
 
     const socket = useContext(SocketContext);
-    const [inQueue, setInQueue] = useState(false);
     const [inGame, setInGame] = useState(false);
     const [idOpponent, setIdOpponent] = useState(null);
 
@@ -22,18 +19,10 @@ export default function OnlineGameController({ nav }) {
     const [playerWin, setPlayerWin] = useState(false)
 
     useEffect(() => {
-        console.log('[emit][queue.join]:', socket.id);
-        socket.emit("queue.join");
-        setInQueue(false);
-        setInGame(false);
-        socket.on('queue.added', (data) => {
-            console.log('[listen][queue.added]:', data);
-            setInQueue(data['inQueue']);
-            setInGame(data['inGame']);
-        });
+        setInGame(true);
+        socket.emit("game.vsbot.start")
         socket.on('game.start', (data) => {
             console.log('[listen][game.start]:', data);
-            setInQueue(data['inQueue']);
             setInGame(data['inGame']);
             setIdOpponent(data['idOpponent']);
         });
@@ -44,46 +33,20 @@ export default function OnlineGameController({ nav }) {
             setPlayerWin(data['playerWin'])
             setGameDetails(data['gameDetails'])
         })
-        socket.on('queue.eject', (data) => {
-            console.log('[listen][queue.leave]');
-            setInQueue(data['inQueue'])
-            setInGame(data['inGame'])
-        })
     }, []);
 
     const toMenu = () => {
         nav({ name: 'HomeScreen' });
         setIsOver(false);
     }
-    const quitQueue = () => {
-        socket.emit("queue.leave");
-        toMenu()
-    }
-
-    const forfeit = () => {
-        socket.emit("queue.ff");
-        nav({ name: 'HomeScreen' });
-    }
-
 
     return (
         <View style={styles.container}>
-            {!inQueue && !inGame && (
+            {!inGame && (
                 <>
                     <Text style={styles.paragraph}>
                         Waiting for server datas...
                     </Text>
-                </>
-            )}
-            {inQueue && (
-                <>
-                    <Text style={styles.paragraph}>
-                        Waiting for another player...
-                    </Text>
-                    <Button
-                        title="Quitter la file"
-                        onPress={() => quitQueue()}
-                    />
                 </>
             )}
             {inGame && (
@@ -125,8 +88,10 @@ export default function OnlineGameController({ nav }) {
         </View>
     ); }
 
-const styles = StyleSheet.create({ container: {
+const styles = StyleSheet.create({
+    container: {
         flex: 1,
+        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
         width: '100%',
@@ -134,7 +99,5 @@ const styles = StyleSheet.create({ container: {
     },
     paragraph: {
         fontSize: 16,
-        color: "#FEF49A",
-        fontFamily: 'MarkoOne-Regular',
     }
 });

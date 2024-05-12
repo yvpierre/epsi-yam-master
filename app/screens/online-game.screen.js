@@ -5,6 +5,11 @@ import OnlineGameController from "../controllers/online-game.controller";
 import { LinearGradient } from 'expo-linear-gradient';
 export default function OnlineGameScreen({ navigation }) {
     const socket = useContext(SocketContext);
+
+    const navTo = (path) => {
+        navigation.navigate(path)
+    }
+
     return (
         <LinearGradient colors={['#541765', '#0A002E', '#541765']} style={styles.container}>
 
@@ -24,6 +29,7 @@ export default function OnlineGameScreen({ navigation }) {
                     </>
                 )} </View>
         </LinearGradient>
+
     ); }
 
 const styles = StyleSheet.create({ container: {

@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
         borderColor: '#FEF49A' // Use 'borderWidth' and 'borderColor' instead of 'border'
     },
     gradient: {
+
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
