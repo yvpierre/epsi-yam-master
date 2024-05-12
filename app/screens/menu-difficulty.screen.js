@@ -2,38 +2,30 @@ import React from "react";
 import { StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
 import { LinearGradient } from 'expo-linear-gradient';
 
-
-
-export default function HomeScreen({ navigation }) {
-    React.useEffect(() => {
-        // Load the font asynchronously
-
-    }, []);
-
+export default function MenuDifficultyScreen({ navigation }) {
     return (
         <LinearGradient colors={['#541765', '#0A002E', '#541765']} style={styles.container}>
-            <Image
-                source={require("../assets/yam master.png")}
-                style={styles.image}
-            />
-            <Text style={styles.titleText}> 
-                DELUXE EDITION
-            </Text> 
             <View style={styles.content}>
                 <CustomButton
-                    title="JOUER"
-                    onPress={() => navigation.navigate("MenuGameScreen")}
-                    textColor="#FEF49A"
-                    gradientColors={['#C9083F', '#FF5BB3','#C9083F']}
-                />
-                <CustomButton
-                    title="OPTIONS"
+                    title="TRANQUILLE"
                     onPress={() => navigation.navigate("VsBotGameScreen")}
                     textColor="#FEF49A"
                     gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
                 />
                 <CustomButton
-                    title="AIDE"
+                    title="NORMAL"
+                    onPress={() => navigation.navigate("VsBotGameScreen")}
+                    textColor="#FEF49A"
+                    gradientColors={['#C9083F', '#FF5BB3','#C9083F']}
+                />
+                <CustomButton
+                    title="EXPRESS"
+                    onPress={() => navigation.navigate("VsBotGameScreen")}
+                    textColor="#FEF49A"
+                    gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
+                />
+                <CustomButton
+                    title="CHAOS"
                     onPress={() => navigation.navigate("VsBotGameScreen")}
                     textColor="#FEF49A"
                     gradientColors={['#C9083F', '#FF5BB3', '#C9083F']}
@@ -57,7 +49,6 @@ const CustomButton = ({ title, onPress, textColor, gradientColors }) => (
 );
 
 const styles = StyleSheet.create({
-    
     container: {
         flex: 1,
         justifyContent: "center",
@@ -66,16 +57,12 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         color: "white"
     },
-    image: {
-        width: "287px",
-        height: null,
-        resizeMode: "cover",
-    },
     content: {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         fontWeight: 400,
+
     },
     buttonContainer: {
         width: 200,
@@ -83,11 +70,9 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         borderRadius: 10,
         overflow: 'hidden', // to clip the gradient within the button container
-        borderWidth: 5,
-        borderColor: '#FEF49A' // Use 'borderWidth' and 'borderColor' instead of 'border'
+        border: '5px solid #FEF49A'
     },
     gradient: {
-
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
@@ -96,13 +81,5 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: "MarkoOne-Regular", // Use the declared font family here
 
-    },
-    titleText: {
-        fontSize: 18,
-        color: "white",
-        textAlign: "center",
-        fontWeight: 400,
-        marginVertical: 10,
-        fontFamily: "MarkoOne-Regular", // Use the declared font family here
     },
 });

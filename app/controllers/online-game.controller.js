@@ -2,9 +2,11 @@
 import React, { useEffect, useState, useContext } from "react"; import {Button, Modal, StyleSheet, Text, View} from "react-native";
 import { SocketContext } from '../contexts/socket.context';
 import Board from "../components/board/board.component";
+
 import useWindowSize from 'react-use/lib/useWindowSize'
 import Confetti from "react-confetti";
-
+import { LinearGradient } from 'expo-linear-gradient';
+                                                
 export default function OnlineGameController({ nav }) {
     const { width, height } = useWindowSize()
 
@@ -125,7 +127,6 @@ export default function OnlineGameController({ nav }) {
 
 const styles = StyleSheet.create({ container: {
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
         width: '100%',
@@ -133,5 +134,7 @@ const styles = StyleSheet.create({ container: {
     },
     paragraph: {
         fontSize: 16,
+        color: "#FEF49A",
+        fontFamily: 'MarkoOne-Regular',
     }
 });
