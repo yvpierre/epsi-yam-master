@@ -8,33 +8,35 @@
 - Ci-dessous on peut retrouver une liste des différentes pages avec des explications sur les différents modes par exemple.
 - Le jeu devrait idéalement être lancé sur mobile, l'UI est design pour.
 
-Menu principal:
+#### Menu principal:
 - Jouer
 - Replays
 - Paramètres
 
-Modes de jeu:
+#### Modes de jeu:
 - Solo (vs bot)
 - Multi en ligne
 - Multi local
 
-IA pour le bot: plus ou moins précis et des plus ou moins bonnes décisions
+#### IA pour le bot:
+Plus ou moins précis et des plus ou moins bonnes décisions
 
-Menu en jeu:
+#### Menu en jeu:
 - Paramètres
 - Musique (on/off)
 - Abandonner
 
-Pour chaque mode de difficulté (bot plus dur et moins de temps):
+#### Pour chaque mode de difficulté (bot plus dur et moins de temps):
 - Tranquille (2min/tour)
 - Normal (1min/tour)
 - Express (30sec/tour)
 - Impossible (15s/tour)
 
-UI :
+#### UI :
 - Typo et DA casino
 
-Implémenter :
+#### Implémenter :
+- Meilleure factorisation des fonctions du backend
 - Docker pour lancer les différents serveurs
 - MMR (classement)
 - Animations
