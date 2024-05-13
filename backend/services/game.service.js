@@ -1,7 +1,7 @@
 // websocket-server/services/game.service.js
 
 const TURN_DURATION = 45;
-const NB_PIONS = 3;
+const NB_PIONS = 12;
 
 const DECK_INIT = {
     dices: [
