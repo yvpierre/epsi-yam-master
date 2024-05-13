@@ -6,6 +6,7 @@
 - Le jeu fonctionne dans l'ensemble jusqu'au mode versus bot où il est possible de lancer une partie, de jouer, mais le bot ne répond malheuresement pas car la logique n'a pas pu être implémentée.
 - Le frontend comprend des fonctionnalités qui n'ont pas pu être développés mais qui sont tout de même présentes dans les menus histoire de donner une idée de ce à quoi pourrait ressembler le jeu avec plus de développements
 - Ci-dessous on peut retrouver une liste des différentes pages avec des explications sur les différents modes par exemple.
+- Le jeu devrait idéalement être lancé sur mobile, l'UI est design pour.
 
 Menu principal:
 - Jouer
