@@ -27,7 +27,7 @@ export default function OnlineGameScreen({ navigation }) {
                     <>
                         <OnlineGameController />
                     </>
-                )} </View>
+            )} </View>
         </LinearGradient>
     ); }
 

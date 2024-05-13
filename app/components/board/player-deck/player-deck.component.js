@@ -38,11 +38,6 @@ const PlayerDeck = () => {
                 <>
                     {displayRollButton && (
                         <>
-                            <View style={styles.rollInfoContainer}>
-                                <Text style={styles.rollInfoText}>
-                                    Lancer {rollsCounter} / {rollsMaximum}
-                                </Text>
-                            </View>
                 </>
             )}
             <View style={styles.diceContainer}>
@@ -59,7 +54,9 @@ const PlayerDeck = () => {
                     {displayRollButton && (
                         <>
                             <TouchableOpacity style={styles.rollButton} onPress={rollDices}>
-                                <Text style={styles.rollButtonText}>Roll</Text>
+                                
+                                <Text style={styles.rollButtonText} >RELANCER LES DÉS ( {rollsMaximum - rollsCounter + 1} RESTANT)</Text>
+                            
                             </TouchableOpacity>
                         </>
                     )} </>
@@ -73,7 +70,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderBottomWidth: 1,
-        borderColor: "black"
     },
     rollInfoContainer: {
         marginBottom: 10,
@@ -85,20 +81,23 @@ const styles = StyleSheet.create({
     diceContainer: {
         flexDirection: "row",
         width: "70%",
-        justifyContent: "space-between",
         marginBottom: 10,
+        justifyContent: "space-between",
+        width: "240px",
+        height: "40px",
     },
     rollButton: {
-        width: "30%",
+        width: "281px",
         paddingVertical: 10,
         borderRadius: 5,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "black"
+        backgroundColor: "#C9083F"
     },
     rollButtonText: {
-        fontSize: 18,
-        color: "white",
+        fontSize: 8,
+        color: "#FEF49A",
         fontWeight: "bold",
+        
     }, });
 export default PlayerDeck;

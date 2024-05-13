@@ -36,11 +36,11 @@ const styles = StyleSheet.create({ deckOpponentContainer:
         justifyContent: "center",
         alignItems: "center",
         borderBottomWidth: 1,
-        border: "solid 1px green",
     },
     diceContainer: {
         flexDirection: "row",
-        width: "100%",
-        border: "solid 1px blue",
+        justifyContent: "space-between",
+        width: "240px",
+        height: "40px",
     }, });
 export default OpponentDeck;

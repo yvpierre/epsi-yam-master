@@ -12,7 +12,7 @@ const PlayerTimerComponent = () => {
     }, []);
     return (
         <View style={styles.playerTimerContainer}>
-            <Text>Timer: {playerTimer}</Text>
+            <Text style={{ color: 'white' }}>Timer: {playerTimer}</Text>
         </View>
     );
 };
@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: "lightgrey"
     },
 });
 

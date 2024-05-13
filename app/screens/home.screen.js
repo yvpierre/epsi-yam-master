@@ -85,9 +85,9 @@ const styles = StyleSheet.create(
         height: 53,
         marginVertical: 10,
         borderRadius: 10,
-        overflow: 'hidden', // to clip the gradient within the button container
+        overflow: 'hidden', 
         borderWidth: 5,
-        borderColor: '#FEF49A' // Use 'borderWidth' and 'borderColor' instead of 'border'
+        borderColor: '#FEF49A' 
     },
     gradient: {
         flex: 1,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create(
     },
     buttonText: {
         fontSize: 20,
-        fontFamily: "MarkoOne-Regular", // Use the declared font family here
+        fontFamily: "MarkoOne-Regular", 
 
     },
     titleText: {
@@ -105,7 +105,7 @@ const styles = StyleSheet.create(
         textAlign: "center",
         fontWeight: 400,
         marginVertical: 10,
-        fontFamily: "MarkoOne-Regular", // Use the declared font family here
+        fontFamily: "MarkoOne-Regular", 
     },
     btnwip: {
         opacity: 0.5,

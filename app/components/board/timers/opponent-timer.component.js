@@ -11,7 +11,7 @@ const OpponentTimerComponent = () => {
         });
     }, []); return (
         <View style={styles.opponentTimerContainer}>
-            <Text>Timer: {opponentTimer}</Text>
+            <Text style={{ color: 'white' }}>Timer: {opponentTimer}</Text>
         </View>
     ); };
 
@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        border: '1px solid yellow',
     },
 });
 export default OpponentTimerComponent;
